@@ -26,7 +26,7 @@ import {
   Textarea,
   HighlightText,
 } from "../shared/ui"
-import { fetchPosts, fetchTags, createPost } from "../entities/post/api"
+import { fetchPosts, fetchTags, createPost, fetchPostsByQuery } from "../entities/post/api"
 
 export type Post = {
   id: number
@@ -132,8 +132,7 @@ const PostsManager = () => {
     }
     setLoading(true)
     try {
-      const response = await fetch(`/api/posts/search?q=${searchQuery}`)
-      const data = await response.json()
+      const data = await fetchPostsByQuery({ searchQuery })
       setPosts(data.posts)
       setTotal(data.total)
     } catch (error) {
