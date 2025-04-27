@@ -27,7 +27,7 @@ import {
   HighlightText,
 } from "../shared/ui"
 import { fetchPosts, fetchTags, createPost, fetchPostsByQuery, updatePost, deletePost } from "../entities/post/api"
-import { fetchCommentsByPostId } from "../entities/comment/api"
+import { createComment, fetchCommentsByPostId } from "../entities/comment/api"
 
 export type Post = {
   id: number
@@ -218,12 +218,7 @@ const PostsManager = () => {
   // 댓글 추가
   const addComment = async () => {
     try {
-      const response = await fetch("/api/comments/add", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newComment),
-      })
-      const data = await response.json()
+      const data = await createComment({ newComment })
       setComments((prev) => ({
         ...prev,
         [data.postId]: [...(prev[data.postId] || []), data],
