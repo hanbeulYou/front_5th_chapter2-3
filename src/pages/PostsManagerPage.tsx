@@ -26,8 +26,9 @@ import {
   Textarea,
   HighlightText,
 } from "../shared/ui"
+import { fetchPosts } from "../entities/post/api"
 
-type Post = {
+export type Post = {
   id: number
   title: string
   body: string
@@ -41,14 +42,14 @@ type Post = {
   author?: User
 }
 
-type NewPost = Omit<Post, "id">
+export type NewPost = Omit<Post, "id">
 
-type Tag = {
+export type Tag = {
   slug: string
   url: string
 }
 
-type User = {
+export type User = {
   id: number
   username: string
   image?: string
@@ -69,7 +70,7 @@ type User = {
   }
 }
 
-type Comment = {
+export type Comment = {
   body: string
   id: number
   postId: number
@@ -77,7 +78,10 @@ type Comment = {
   user: User
 }
 
-type NewComment = Omit<Comment, "id" | "user" | "likes" | "postId"> & { userId: number | null; postId: number | null }
+export type NewComment = Omit<Comment, "id" | "user" | "likes" | "postId"> & {
+  userId: number | null
+  postId: number | null
+}
 
 const PostsManager = () => {
   const navigate = useNavigate()
@@ -120,36 +124,6 @@ const PostsManager = () => {
     navigate(`?${params.toString()}`)
   }
 
-  // 게시물 가져오기
-  const fetchPosts = () => {
-    setLoading(true)
-    let postsData: { posts: Post[]; total: number }
-    let usersData: User[]
-
-    fetch(`/api/posts?limit=${limit}&skip=${skip}`)
-      .then((response) => response.json())
-      .then((data) => {
-        postsData = data
-        return fetch("/api/users?limit=0&select=username,image")
-      })
-      .then((response) => response.json())
-      .then((users) => {
-        usersData = users.users
-        const postsWithUsers = postsData.posts.map((post) => ({
-          ...post,
-          author: usersData.find((user) => user.id === post.userId),
-        }))
-        setPosts(postsWithUsers)
-        setTotal(postsData.total)
-      })
-      .catch((error) => {
-        console.error("게시물 가져오기 오류:", error)
-      })
-      .finally(() => {
-        setLoading(false)
-      })
-  }
-
   // 태그 가져오기
   const fetchTags = async () => {
     try {
@@ -164,7 +138,7 @@ const PostsManager = () => {
   // 게시물 검색
   const searchPosts = async () => {
     if (!searchQuery) {
-      fetchPosts()
+      fetchPosts(setLoading, setPosts, setTotal, limit, skip)
       return
     }
     setLoading(true)
@@ -182,7 +156,7 @@ const PostsManager = () => {
   // 태그별 게시물 가져오기
   const fetchPostsByTag = async (tag: string) => {
     if (!tag || tag === "all") {
-      fetchPosts()
+      fetchPosts(setLoading, setPosts, setTotal, limit, skip)
       return
     }
     setLoading(true)
@@ -365,7 +339,7 @@ const PostsManager = () => {
     if (selectedTag) {
       fetchPostsByTag(selectedTag)
     } else {
-      fetchPosts()
+      fetchPosts(setLoading, setPosts, setTotal, limit, skip)
     }
     updateURL()
   }, [skip, limit, sortBy, sortOrder, selectedTag])
