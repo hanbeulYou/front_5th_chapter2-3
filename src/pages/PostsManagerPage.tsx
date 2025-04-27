@@ -27,7 +27,7 @@ import {
   HighlightText,
 } from "../shared/ui"
 import { fetchPosts, fetchTags, createPost, fetchPostsByQuery, updatePost, deletePost } from "../entities/post/api"
-import { createComment, fetchCommentsByPostId } from "../entities/comment/api"
+import { createComment, fetchCommentsByPostId, updateComment } from "../entities/comment/api"
 
 export type Post = {
   id: number
@@ -216,7 +216,7 @@ const PostsManager = () => {
   }
 
   // 댓글 추가
-  const addComment = async () => {
+  const handleAddComment = async () => {
     try {
       const data = await createComment({ newComment })
       setComments((prev) => ({
@@ -231,14 +231,10 @@ const PostsManager = () => {
   }
 
   // 댓글 업데이트
-  const updateComment = async () => {
+  const handleUpdateComment = async () => {
     try {
-      const response = await fetch(`/api/comments/${selectedComment?.id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ body: selectedComment?.body }),
-      })
-      const data = await response.json()
+      if (!selectedComment) return
+      const data = await updateComment({ selectedComment })
       setComments((prev) => ({
         ...prev,
         [data.postId]: prev[data.postId].map((comment) => (comment.id === data.id ? data : comment)),
@@ -618,7 +614,7 @@ const PostsManager = () => {
               value={newComment.body}
               onChange={(e) => setNewComment({ ...newComment, body: e.target.value })}
             />
-            <Button onClick={addComment}>댓글 추가</Button>
+            <Button onClick={handleAddComment}>댓글 추가</Button>
           </div>
         </DialogContent>
       </Dialog>
@@ -635,7 +631,7 @@ const PostsManager = () => {
               value={selectedComment?.body || ""}
               onChange={(e) => setSelectedComment({ ...(selectedComment as Comment), body: e.target.value })}
             />
-            <Button onClick={updateComment}>댓글 업데이트</Button>
+            <Button onClick={handleUpdateComment}>댓글 업데이트</Button>
           </div>
         </DialogContent>
       </Dialog>
