@@ -158,8 +158,9 @@ const PostsManager = () => {
       setLoading(false)
     }
   }
+
   // 게시물 검색
-  const searchPosts = async () => {
+  const handleSearchPosts = async () => {
     if (!searchQuery) {
       handleFetchPosts()
       return
@@ -199,7 +200,7 @@ const PostsManager = () => {
   }
 
   // 게시물 추가
-  const addPost = async () => {
+  const handleAddPost = async () => {
     try {
       const response = await createPost({ newPost })
       setPosts([response, ...posts])
@@ -233,7 +234,7 @@ const PostsManager = () => {
   }
 
   // 댓글 가져오기
-  const fetchComments = async (postId: number) => {
+  const handleFetchComments = async (postId: number) => {
     if (comments[postId]) return // 이미 불러온 댓글이 있으면 다시 불러오지 않음
     try {
       const data = await fetchCommentsByPostId({ postId })
@@ -302,14 +303,14 @@ const PostsManager = () => {
   }
 
   // 게시물 상세 보기
-  const openPostDetail = (post: Post) => {
+  const handleOpenPostDetail = (post: Post) => {
     setSelectedPost(post)
-    fetchComments(post.id)
+    handleFetchComments(post.id)
     setShowPostDetailDialog(true)
   }
 
   // 사용자 모달 열기
-  const openUserModal = async (user: User) => {
+  const handleOpenUserModal = async (user: User) => {
     try {
       const userData = await fetchUser({ userId: user.id })
       setSelectedUser(userData)
@@ -387,7 +388,10 @@ const PostsManager = () => {
               </div>
             </TableCell>
             <TableCell>
-              <div className="flex items-center space-x-2 cursor-pointer" onClick={() => openUserModal(post.author!)}>
+              <div
+                className="flex items-center space-x-2 cursor-pointer"
+                onClick={() => handleOpenUserModal(post.author!)}
+              >
                 <img src={post.author?.image} alt={post.author?.username} className="w-8 h-8 rounded-full" />
                 <span>{post.author?.username}</span>
               </div>
@@ -402,7 +406,7 @@ const PostsManager = () => {
             </TableCell>
             <TableCell>
               <div className="flex items-center gap-2">
-                <Button variant="ghost" size="sm" onClick={() => openPostDetail(post)}>
+                <Button variant="ghost" size="sm" onClick={() => handleOpenPostDetail(post)}>
                   <MessageSquare className="w-4 h-4" />
                 </Button>
                 <Button
@@ -497,7 +501,7 @@ const PostsManager = () => {
                   className="pl-8"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  onKeyPress={(e) => e.key === "Enter" && searchPosts()}
+                  onKeyPress={(e) => e.key === "Enter" && handleSearchPosts()}
                 />
               </div>
             </div>
@@ -598,7 +602,7 @@ const PostsManager = () => {
               value={newPost.userId}
               onChange={(e) => setNewPost({ ...newPost, userId: Number(e.target.value) })}
             />
-            <Button onClick={addPost}>게시물 추가</Button>
+            <Button onClick={handleAddPost}>게시물 추가</Button>
           </div>
         </DialogContent>
       </Dialog>
