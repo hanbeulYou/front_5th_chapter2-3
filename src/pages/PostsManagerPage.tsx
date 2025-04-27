@@ -27,7 +27,7 @@ import {
   HighlightText,
 } from "../shared/ui"
 import { fetchPosts, fetchTags, createPost, fetchPostsByQuery, updatePost, deletePost } from "../entities/post/api"
-import { createComment, fetchCommentsByPostId, updateComment } from "../entities/comment/api"
+import { createComment, deleteComment, fetchCommentsByPostId, updateComment } from "../entities/comment/api"
 
 export type Post = {
   id: number
@@ -246,11 +246,9 @@ const PostsManager = () => {
   }
 
   // 댓글 삭제
-  const deleteComment = async (id: number, postId: number) => {
+  const handleDeleteComment = async (id: number, postId: number) => {
     try {
-      await fetch(`/api/comments/${id}`, {
-        method: "DELETE",
-      })
+      await deleteComment({ commentId: id })
       setComments((prev) => ({
         ...prev,
         [postId]: prev[postId].filter((comment) => comment.id !== id),
@@ -440,7 +438,7 @@ const PostsManager = () => {
               >
                 <Edit2 className="w-3 h-3" />
               </Button>
-              <Button variant="ghost" size="sm" onClick={() => deleteComment(comment.id, postId)}>
+              <Button variant="ghost" size="sm" onClick={() => handleDeleteComment(comment.id, postId)}>
                 <Trash2 className="w-3 h-3" />
               </Button>
             </div>
