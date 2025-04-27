@@ -26,7 +26,15 @@ import {
   Textarea,
   HighlightText,
 } from "../shared/ui"
-import { fetchPosts, fetchTags, createPost, fetchPostsByQuery, updatePost, deletePost } from "../entities/post/api"
+import {
+  fetchPosts,
+  fetchTags,
+  createPost,
+  fetchPostsByQuery,
+  updatePost,
+  deletePost,
+  fetchPostsByTag,
+} from "../entities/post/api"
 import {
   createComment,
   deleteComment,
@@ -34,6 +42,7 @@ import {
   likeComment,
   updateComment,
 } from "../entities/comment/api"
+import { fetchUser, fetchUsers } from "../entities/user/api"
 
 export type Post = {
   id: number
@@ -149,19 +158,14 @@ const PostsManager = () => {
   }
 
   // 태그별 게시물 가져오기
-  const fetchPostsByTag = async (tag: string) => {
+  const handleFetchPostsByTag = async (tag: string) => {
     if (!tag || tag === "all") {
       fetchPosts({ setLoading, setPosts, setTotal, limit, skip })
       return
     }
     setLoading(true)
     try {
-      const [postsResponse, usersResponse] = await Promise.all([
-        fetch(`/api/posts/tag/${tag}`),
-        fetch("/api/users?limit=0&select=username,image"),
-      ])
-      const postsData = (await postsResponse.json()) as { limit: number; skip: number; total: number; posts: Post[] }
-      const usersData = (await usersResponse.json()) as { limit: number; skip: number; total: number; users: User[] }
+      const [postsData, usersData] = await Promise.all([fetchPostsByTag({ tag }), fetchUsers()])
 
       const postsWithUsers = postsData.posts.map((post) => ({
         ...post,
@@ -289,8 +293,7 @@ const PostsManager = () => {
   // 사용자 모달 열기
   const openUserModal = async (user: User) => {
     try {
-      const response = await fetch(`/api/users/${user.id}`)
-      const userData = await response.json()
+      const userData = await fetchUser({ userId: user.id })
       setSelectedUser(userData)
       setShowUserModal(true)
     } catch (error) {
@@ -304,7 +307,7 @@ const PostsManager = () => {
 
   useEffect(() => {
     if (selectedTag) {
-      fetchPostsByTag(selectedTag)
+      handleFetchPostsByTag(selectedTag)
     } else {
       fetchPosts({ setLoading, setPosts, setTotal, limit, skip })
     }
@@ -480,7 +483,7 @@ const PostsManager = () => {
               value={selectedTag}
               onValueChange={(value) => {
                 setSelectedTag(value)
-                fetchPostsByTag(value)
+                handleFetchPostsByTag(value)
                 updateURL()
               }}
             >
