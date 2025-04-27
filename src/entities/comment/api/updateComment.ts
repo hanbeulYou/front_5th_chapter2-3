@@ -1,10 +1,12 @@
 import { Comment } from "../../../pages/PostsManagerPage"
 
-interface UpdateComment {
+interface UpdateCommentRequest {
   selectedComment: Comment
 }
 
-export const updateComment = async ({ selectedComment }: UpdateComment) => {
+type UpdateCommentResponse = Comment
+
+export const updateComment = async ({ selectedComment }: UpdateCommentRequest): Promise<UpdateCommentResponse> => {
   const response = await fetch(`/api/comments/${selectedComment.id}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },

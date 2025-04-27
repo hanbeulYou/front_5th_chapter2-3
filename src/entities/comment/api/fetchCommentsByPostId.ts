@@ -1,8 +1,19 @@
-interface FetchCommentsByPostId {
+import { Comment } from "../../../pages/PostsManagerPage"
+
+interface FetchCommentsByPostIdRequest {
   postId: number
 }
 
-export const fetchCommentsByPostId = async ({ postId }: FetchCommentsByPostId) => {
+interface FetchCommentsByPostIdResponse {
+  comments: Comment[]
+  total: number
+  skip: number
+  limit: number
+}
+
+export const fetchCommentsByPostId = async ({
+  postId,
+}: FetchCommentsByPostIdRequest): Promise<FetchCommentsByPostIdResponse> => {
   const response = await fetch(`/api/comments/post/${postId}`)
   const data = await response.json()
   return data

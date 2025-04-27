@@ -1,10 +1,12 @@
-import { NewComment } from "../../../pages/PostsManagerPage"
+import { NewComment, Comment } from "../../../pages/PostsManagerPage"
 
-interface CreateComment {
+interface CreateCommentRequest {
   newComment: NewComment
 }
 
-export const createComment = async ({ newComment }: CreateComment) => {
+type CreateCommentResponse = Comment
+
+export const createComment = async ({ newComment }: CreateCommentRequest): Promise<CreateCommentResponse> => {
   const response = await fetch("/api/comments/add", {
     method: "POST",
     headers: { "Content-Type": "application/json" },

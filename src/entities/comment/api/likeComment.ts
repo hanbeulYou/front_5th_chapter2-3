@@ -1,11 +1,13 @@
 import { Comment } from "../../../pages/PostsManagerPage"
 
-interface LikeComment {
+interface LikeCommentRequest {
   commentId: number
   comment: Comment
 }
 
-export const likeComment = async ({ commentId, comment }: LikeComment) => {
+type LikeCommentResponse = Comment
+
+export const likeComment = async ({ commentId, comment }: LikeCommentRequest): Promise<LikeCommentResponse> => {
   const response = await fetch(`/api/comments/${commentId}`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
