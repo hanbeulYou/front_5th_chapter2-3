@@ -5,40 +5,8 @@ import * as DialogPrimitive from "@radix-ui/react-dialog"
 import { Check, ChevronDown, X } from "lucide-react"
 
 export * from "./Button"
-
-// 입력 컴포넌트
-export const Input = forwardRef(({ className, type, ...props }, ref) => {
-  return (
-    <input
-      type={type}
-      className={`flex h-10 w-full rounded-md border border-input bg-white px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
-      ref={ref}
-      {...props}
-    />
-  )
-})
-Input.displayName = "Input"
-
-// 카드 컴포넌트
-export const Card = forwardRef(({ className, ...props }, ref) => (
-  <div ref={ref} className={`rounded-lg border bg-card text-card-foreground shadow-sm ${className}`} {...props} />
-))
-Card.displayName = "Card"
-
-export const CardHeader = forwardRef(({ className, ...props }, ref) => (
-  <div ref={ref} className={`flex flex-col space-y-1.5 p-6 ${className}`} {...props} />
-))
-CardHeader.displayName = "CardHeader"
-
-export const CardTitle = forwardRef(({ className, ...props }, ref) => (
-  <h3 ref={ref} className={`text-2xl font-semibold leading-none tracking-tight ${className}`} {...props} />
-))
-CardTitle.displayName = "CardTitle"
-
-export const CardContent = forwardRef(({ className, ...props }, ref) => (
-  <div ref={ref} className={`p-6 pt-0 ${className}`} {...props} />
-))
-CardContent.displayName = "CardContent"
+export * from "./Input"
+export * from "./Card"
 
 // 텍스트 영역 컴포넌트
 export const Textarea = forwardRef(({ className, ...props }, ref) => {
