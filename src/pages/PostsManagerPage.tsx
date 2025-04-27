@@ -26,7 +26,15 @@ import {
   Textarea,
   HighlightText,
 } from "../shared/ui"
-import { fetchPosts, fetchTags, createPost, fetchPostsByQuery, updatePost, deletePost } from "../entities/post/api"
+import {
+  fetchPosts,
+  fetchTags,
+  createPost,
+  fetchPostsByQuery,
+  updatePost,
+  deletePost,
+  fetchCommentByPostId,
+} from "../entities/post/api"
 
 export type Post = {
   id: number
@@ -184,7 +192,8 @@ const PostsManager = () => {
   // 게시물 업데이트
   const handleUpdatePost = async () => {
     try {
-      const data = await updatePost({ selectedPost: selectedPost! })
+      if (!selectedPost) return
+      const data = await updatePost({ selectedPost: selectedPost })
       setPosts(posts.map((post) => (post.id === data.id ? data : post)))
       setShowEditDialog(false)
     } catch (error) {
@@ -206,8 +215,7 @@ const PostsManager = () => {
   const fetchComments = async (postId: number) => {
     if (comments[postId]) return // 이미 불러온 댓글이 있으면 다시 불러오지 않음
     try {
-      const response = await fetch(`/api/comments/post/${postId}`)
-      const data = await response.json()
+      const data = await fetchCommentByPostId({ postId })
       setComments((prev) => ({ ...prev, [postId]: data.comments }))
     } catch (error) {
       console.error("댓글 가져오기 오류:", error)
