@@ -27,7 +27,13 @@ import {
   HighlightText,
 } from "../shared/ui"
 import { fetchPosts, fetchTags, createPost, fetchPostsByQuery, updatePost, deletePost } from "../entities/post/api"
-import { createComment, deleteComment, fetchCommentsByPostId, updateComment } from "../entities/comment/api"
+import {
+  createComment,
+  deleteComment,
+  fetchCommentsByPostId,
+  likeComment,
+  updateComment,
+} from "../entities/comment/api"
 
 export type Post = {
   id: number
@@ -259,14 +265,9 @@ const PostsManager = () => {
   }
 
   // 댓글 좋아요
-  const likeComment = async (id: number, postId: number) => {
+  const handleLikeComment = async (id: number, postId: number) => {
     try {
-      const response = await fetch(`/api/comments/${id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ likes: comments[postId]!.find((c) => c.id === id)!.likes + 1 }),
-      })
-      const data = await response.json()
+      const data = await likeComment({ commentId: id, comment: comments[postId]!.find((c) => c.id === id)! })
       setComments((prev) => ({
         ...prev,
         [postId]: prev[postId].map((comment) =>
@@ -424,7 +425,7 @@ const PostsManager = () => {
               <span className="truncate">{HighlightText(comment.body, searchQuery)}</span>
             </div>
             <div className="flex items-center space-x-1">
-              <Button variant="ghost" size="sm" onClick={() => likeComment(comment.id, postId)}>
+              <Button variant="ghost" size="sm" onClick={() => handleLikeComment(comment.id, postId)}>
                 <ThumbsUp className="w-3 h-3" />
                 <span className="ml-1 text-xs">{comment.likes}</span>
               </Button>
