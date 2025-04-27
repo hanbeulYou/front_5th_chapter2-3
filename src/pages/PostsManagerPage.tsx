@@ -140,10 +140,28 @@ const PostsManager = () => {
     navigate(`?${params.toString()}`)
   }
 
+  // 기존 fetchPosts 함수 대체
+  const handleFetchPosts = async () => {
+    setLoading(true)
+    try {
+      const postsData = await fetchPosts({ limit, skip })
+      const usersData = await fetchUsers()
+      const postsWithUsers = postsData.posts.map((post) => ({
+        ...post,
+        author: usersData.users.find((user) => user.id === post.userId),
+      }))
+      setPosts(postsWithUsers)
+      setTotal(postsData.total)
+    } catch (error) {
+      console.error("게시물 가져오기 오류:", error)
+    } finally {
+      setLoading(false)
+    }
+  }
   // 게시물 검색
   const searchPosts = async () => {
     if (!searchQuery) {
-      fetchPosts({ setLoading, setPosts, setTotal, limit, skip })
+      handleFetchPosts()
       return
     }
     setLoading(true)
@@ -160,7 +178,7 @@ const PostsManager = () => {
   // 태그별 게시물 가져오기
   const handleFetchPostsByTag = async (tag: string) => {
     if (!tag || tag === "all") {
-      fetchPosts({ setLoading, setPosts, setTotal, limit, skip })
+      handleFetchPosts()
       return
     }
     setLoading(true)
@@ -313,7 +331,7 @@ const PostsManager = () => {
     if (selectedTag) {
       handleFetchPostsByTag(selectedTag)
     } else {
-      fetchPosts({ setLoading, setPosts, setTotal, limit, skip })
+      handleFetchPosts()
     }
     updateURL()
   }, [skip, limit, sortBy, sortOrder, selectedTag])
