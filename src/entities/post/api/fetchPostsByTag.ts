@@ -1,18 +1,18 @@
 import { Post } from "../../../pages/PostsManagerPage"
 
-interface FetchPostsByTag {
+interface FetchPostsByTagRequest {
   tag: string
-  setLoading: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-export const fetchPostsByTag = async ({ tag, setLoading }: FetchPostsByTag) => {
-  setLoading(true)
-  try {
-    const postsResponse = await fetch(`/api/posts/tag/${tag}`)
-    const postsData = (await postsResponse.json()) as { limit: number; skip: number; total: number; posts: Post[] }
-    return postsData
-  } catch (error) {
-    console.error("태그별 게시물 가져오기 오류:", error)
-  }
-  setLoading(false)
+interface FetchPostsByTagResponse {
+  limit: number
+  skip: number
+  total: number
+  posts: Post[]
+}
+
+export const fetchPostsByTag = async ({ tag }: FetchPostsByTagRequest): Promise<FetchPostsByTagResponse> => {
+  const postsResponse = await fetch(`/api/posts/tag/${tag}`)
+  const postsData = await postsResponse.json()
+  return postsData
 }

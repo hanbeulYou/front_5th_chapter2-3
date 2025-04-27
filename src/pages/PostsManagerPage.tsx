@@ -183,7 +183,7 @@ const PostsManager = () => {
   // 게시물 추가
   const addPost = async () => {
     try {
-      const response = await createPost(newPost)
+      const response = await createPost({ newPost })
       setPosts([response, ...posts])
       setShowAddDialog(false)
       setNewPost({ title: "", body: "", userId: 1 })
@@ -302,7 +302,11 @@ const PostsManager = () => {
   }
 
   useEffect(() => {
-    fetchTags({ setTags })
+    const fetchTagsData = async () => {
+      const tagsData = await fetchTags()
+      setTags(tagsData.tags)
+    }
+    fetchTagsData()
   }, [])
 
   useEffect(() => {
@@ -492,7 +496,7 @@ const PostsManager = () => {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">모든 태그</SelectItem>
-                {tags.map((tag) => (
+                {tags?.map((tag) => (
                   <SelectItem key={tag.url} value={tag.slug}>
                     {tag.slug}
                   </SelectItem>

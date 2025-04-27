@@ -1,13 +1,20 @@
-interface FetchPostsByQuery {
+import { Post } from "../../../pages/PostsManagerPage"
+
+interface FetchPostsByQueryRequest {
   searchQuery: string
 }
 
-export const fetchPostsByQuery = async ({ searchQuery }: FetchPostsByQuery) => {
-  try {
-    const response = await fetch(`/api/posts/search?q=${searchQuery}`)
-    const data = await response.json()
-    return data
-  } catch (error) {
-    console.error("게시물 검색 오류:", error)
-  }
+interface FetchPostsByQueryResponse {
+  posts: Post[]
+  total: number
+  skip: number
+  limit: number
+}
+
+export const fetchPostsByQuery = async ({
+  searchQuery,
+}: FetchPostsByQueryRequest): Promise<FetchPostsByQueryResponse> => {
+  const response = await fetch(`/api/posts/search?q=${searchQuery}`)
+  const data = await response.json()
+  return data
 }

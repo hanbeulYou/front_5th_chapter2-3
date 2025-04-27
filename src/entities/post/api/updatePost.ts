@@ -1,10 +1,12 @@
 import { Post } from "../../../pages/PostsManagerPage"
 
-interface UpdatePost {
+interface UpdatePostRequest {
   selectedPost: Post
 }
 
-export const updatePost = async ({ selectedPost }: UpdatePost) => {
+type UpdatePostResponse = Post
+
+export const updatePost = async ({ selectedPost }: UpdatePostRequest): Promise<UpdatePostResponse> => {
   const response = await fetch(`/api/posts/${selectedPost.id}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },

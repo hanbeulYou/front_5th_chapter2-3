@@ -1,8 +1,12 @@
-interface DeletePost {
+import { Post } from "../../../pages/PostsManagerPage"
+
+interface DeletePostRequest {
   postId: number
 }
 
-export const deletePost = async ({ postId }: DeletePost) => {
+type DeletePostResponse = Post
+
+export const deletePost = async ({ postId }: DeletePostRequest): Promise<DeletePostResponse> => {
   const response = await fetch(`/api/posts/${postId}`, {
     method: "DELETE",
   })
