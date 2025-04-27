@@ -26,8 +26,7 @@ import {
   Textarea,
   HighlightText,
 } from "../shared/ui"
-import { fetchPosts, fetchTags, createPost, fetchPostsByQuery } from "../entities/post/api"
-import { updatePost } from "../entities/post/api/updatePost"
+import { fetchPosts, fetchTags, createPost, fetchPostsByQuery, updatePost, deletePost } from "../entities/post/api"
 
 export type Post = {
   id: number
@@ -194,11 +193,9 @@ const PostsManager = () => {
   }
 
   // 게시물 삭제
-  const deletePost = async (id: number) => {
+  const handleDeletePost = async (id: number) => {
     try {
-      await fetch(`/api/posts/${id}`, {
-        method: "DELETE",
-      })
+      await deletePost({ postId: id })
       setPosts(posts.filter((post) => post.id !== id))
     } catch (error) {
       console.error("게시물 삭제 오류:", error)
@@ -402,7 +399,7 @@ const PostsManager = () => {
                 >
                   <Edit2 className="w-4 h-4" />
                 </Button>
-                <Button variant="ghost" size="sm" onClick={() => deletePost(post.id)}>
+                <Button variant="ghost" size="sm" onClick={() => handleDeletePost(post.id)}>
                   <Trash2 className="w-4 h-4" />
                 </Button>
               </div>
