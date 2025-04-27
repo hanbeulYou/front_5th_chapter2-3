@@ -26,7 +26,7 @@ import {
   Textarea,
   HighlightText,
 } from "../shared/ui"
-import { fetchPosts } from "../entities/post/api"
+import { fetchPosts, fetchTags } from "../entities/post/api"
 
 export type Post = {
   id: number
@@ -124,21 +124,10 @@ const PostsManager = () => {
     navigate(`?${params.toString()}`)
   }
 
-  // 태그 가져오기
-  const fetchTags = async () => {
-    try {
-      const response = await fetch("/api/posts/tags")
-      const data = await response.json()
-      setTags(data)
-    } catch (error) {
-      console.error("태그 가져오기 오류:", error)
-    }
-  }
-
   // 게시물 검색
   const searchPosts = async () => {
     if (!searchQuery) {
-      fetchPosts(setLoading, setPosts, setTotal, limit, skip)
+      fetchPosts({ setLoading, setPosts, setTotal, limit, skip })
       return
     }
     setLoading(true)
@@ -156,7 +145,7 @@ const PostsManager = () => {
   // 태그별 게시물 가져오기
   const fetchPostsByTag = async (tag: string) => {
     if (!tag || tag === "all") {
-      fetchPosts(setLoading, setPosts, setTotal, limit, skip)
+      fetchPosts({ setLoading, setPosts, setTotal, limit, skip })
       return
     }
     setLoading(true)
@@ -332,14 +321,14 @@ const PostsManager = () => {
   }
 
   useEffect(() => {
-    fetchTags()
+    fetchTags({ setTags })
   }, [])
 
   useEffect(() => {
     if (selectedTag) {
       fetchPostsByTag(selectedTag)
     } else {
-      fetchPosts(setLoading, setPosts, setTotal, limit, skip)
+      fetchPosts({ setLoading, setPosts, setTotal, limit, skip })
     }
     updateURL()
   }, [skip, limit, sortBy, sortOrder, selectedTag])

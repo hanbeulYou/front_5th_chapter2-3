@@ -4,6 +4,7 @@ import { Tag } from "../../../pages/PostsManagerPage"
 interface FetchTags {
   setTags: React.Dispatch<React.SetStateAction<Tag[]>>
 }
+
 export const fetchTags = async ({ setTags }: FetchTags) => {
   try {
     const response = await fetch("/api/posts/tags")
