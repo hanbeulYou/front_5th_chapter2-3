@@ -1,4 +1,4 @@
-import { NewComment, Comment } from "../../../pages/PostsManagerPage"
+import { NewComment, Comment } from "../model"
 
 interface CreateCommentRequest {
   newComment: NewComment

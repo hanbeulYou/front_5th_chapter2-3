@@ -1,4 +1,4 @@
-import { Tag } from "../../../pages/PostsManagerPage"
+import { Tag } from "../model"
 
 // 태그 가져오기
 interface FetchTagsResponse {

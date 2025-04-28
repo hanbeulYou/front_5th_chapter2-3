@@ -1,4 +1,4 @@
-import { Post } from "../../../pages/PostsManagerPage"
+import { Post } from "../model"
 
 interface FetchPostsByTagRequest {
   tag: string

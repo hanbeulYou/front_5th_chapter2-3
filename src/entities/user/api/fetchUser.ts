@@ -1,4 +1,4 @@
-import { User } from "../../../pages/PostsManagerPage"
+import { User } from "../model"
 
 interface FetchUserRequest {
   userId: number

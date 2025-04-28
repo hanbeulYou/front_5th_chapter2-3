@@ -43,61 +43,9 @@ import {
   updateComment,
 } from "../entities/comment/api"
 import { fetchUser, fetchUsers } from "../entities/user/api"
-
-export type Post = {
-  id: number
-  title: string
-  body: string
-  userId: number
-  tags?: string[]
-  reactions?: {
-    likes: number
-    dislikes: number
-  }
-  views?: number
-  author?: User
-}
-
-export type NewPost = Omit<Post, "id">
-
-export type Tag = {
-  slug: string
-  url: string
-}
-
-export type User = {
-  id: number
-  username: string
-  image?: string
-  firstName?: string
-  lastName?: string
-  age?: number
-  email?: string
-  phone?: string
-  address?: {
-    address?: string
-    city?: string
-    state?: string
-    postalCode?: string
-  }
-  company?: {
-    name?: string
-    title?: string
-  }
-}
-
-export type Comment = {
-  body: string
-  id: number
-  postId: number
-  likes: number
-  user: User
-}
-
-export type NewComment = Omit<Comment, "id" | "user" | "likes" | "postId"> & {
-  userId: number | null
-  postId: number | null
-}
+import { Post, NewPost, Tag } from "../entities/post/model"
+import { Comment, NewComment } from "../entities/comment/model"
+import { User } from "../entities/user/model"
 
 const PostsManager = () => {
   const navigate = useNavigate()

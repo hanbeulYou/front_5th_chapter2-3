@@ -1,4 +1,4 @@
-import { NewPost, Post } from "../../../pages/PostsManagerPage"
+import { NewPost, Post } from "../model"
 
 interface CreatePostRequest {
   newPost: NewPost
