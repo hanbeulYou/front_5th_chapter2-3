@@ -42,11 +42,12 @@ import {
   likeComment,
   updateComment,
 } from "../entities/comment/api"
-import { fetchUser, fetchUsers } from "../entities/user/api"
+import { fetchUsers } from "../entities/user/api"
 import { Post, NewPost, Tag } from "../entities/post/model"
 import { Comment, NewComment } from "../entities/comment/model"
 import { User } from "../entities/user/model"
 import { useLoadingStore } from "../shared/model"
+import { useUserModal } from "../entities/user/model"
 
 const PostsManager = () => {
   const navigate = useNavigate()
@@ -73,8 +74,8 @@ const PostsManager = () => {
   const [showAddCommentDialog, setShowAddCommentDialog] = useState<boolean>(false)
   const [showEditCommentDialog, setShowEditCommentDialog] = useState<boolean>(false)
   const [showPostDetailDialog, setShowPostDetailDialog] = useState<boolean>(false)
-  const [showUserModal, setShowUserModal] = useState<boolean>(false)
-  const [selectedUser, setSelectedUser] = useState<User | null>(null)
+
+  const { openUser, selectedUser, showUserModal, setShowUserModal } = useUserModal()
 
   const { loading, setLoading } = useLoadingStore()
 
@@ -261,13 +262,7 @@ const PostsManager = () => {
 
   // 사용자 모달 열기
   const handleOpenUserModal = async (user: User) => {
-    try {
-      const userData = await fetchUser({ userId: user.id })
-      setSelectedUser(userData)
-      setShowUserModal(true)
-    } catch (error) {
-      console.error("사용자 정보 가져오기 오류:", error)
-    }
+    openUser(user)
   }
 
   useEffect(() => {
