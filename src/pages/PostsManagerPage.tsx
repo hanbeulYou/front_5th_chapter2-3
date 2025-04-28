@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import { Edit2, MessageSquare, Plus, Search, ThumbsDown, ThumbsUp, Trash2 } from "lucide-react"
 import {
   Button,
@@ -31,13 +31,11 @@ import { User } from "../entities/user/model"
 import { useLoadingStore } from "../shared/model"
 import { useUserModal } from "../entities/user/model"
 import { UserModal } from "../entities/user/ui"
-import { usePostManagement, usePostQueryParams } from "../feature/postManagement/model"
+import { usePostManagement, usePostQueryParams, usePostDetail } from "../feature/postManagement/model"
 import { useCommentManagement } from "../feature/commentManagement/model"
 import { useTags } from "../feature/tagManagement/model"
 
 const PostsManager = () => {
-  const [showPostDetailDialog, setShowPostDetailDialog] = useState<boolean>(false)
-
   const { openUserModal, showUserModal, setShowUserModal, selectedUser } = useUserModal()
 
   const {
@@ -74,6 +72,8 @@ const PostsManager = () => {
     setSearchQuery,
     updateURL,
   } = usePostQueryParams()
+
+  const { showPostDetailDialog, setShowPostDetailDialog, openPostDetail } = usePostDetail({ setSelectedPost })
 
   const {
     comments,
@@ -153,9 +153,7 @@ const PostsManager = () => {
 
   // 게시물 상세 보기
   const handleOpenPostDetail = (post: Post) => {
-    setSelectedPost(post)
-    handleFetchComments(post.id)
-    setShowPostDetailDialog(true)
+    openPostDetail(post)
   }
 
   // 사용자 모달 열기
