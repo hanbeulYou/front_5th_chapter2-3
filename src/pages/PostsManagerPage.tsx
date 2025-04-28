@@ -76,7 +76,7 @@ const PostsManager = () => {
   const [showEditCommentDialog, setShowEditCommentDialog] = useState<boolean>(false)
   const [showPostDetailDialog, setShowPostDetailDialog] = useState<boolean>(false)
 
-  const { openUser, showUserModal, setShowUserModal, selectedUser } = useUserModal()
+  const { openUserModal, showUserModal, setShowUserModal, selectedUser } = useUserModal()
 
   const { loading, setLoading } = useLoadingStore()
 
@@ -264,7 +264,7 @@ const PostsManager = () => {
   // 사용자 모달 열기
   const handleOpenUserModal = async (user: User) => {
     console.log("user", user)
-    openUser(user)
+    openUserModal(user)
   }
 
   useEffect(() => {

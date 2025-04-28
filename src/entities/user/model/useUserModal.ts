@@ -6,7 +6,7 @@ export const useUserModal = () => {
   const [selectedUser, setSelectedUser] = useState<User | null>(null)
   const [showUserModal, setShowUserModal] = useState(false)
 
-  const openUser = async (user: User) => {
+  const openUserModal = async (user: User) => {
     try {
       const userData = await fetchUser({ userId: user.id })
       setSelectedUser(userData)
@@ -20,6 +20,6 @@ export const useUserModal = () => {
     selectedUser,
     showUserModal,
     setShowUserModal,
-    openUser,
+    openUserModal,
   }
 }
