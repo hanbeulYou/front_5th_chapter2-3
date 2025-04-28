@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react"
 import { Edit2, MessageSquare, Plus, Search, ThumbsDown, ThumbsUp, Trash2 } from "lucide-react"
-import { useLocation, useNavigate } from "react-router-dom"
 import {
   Button,
   Card,
@@ -26,29 +25,17 @@ import {
   Textarea,
   HighlightText,
 } from "../shared/ui"
-import { fetchTags } from "../entities/post/api"
-import { Post, Tag } from "../entities/post/model"
+import { Post } from "../entities/post/model"
 import { Comment } from "../entities/comment/model"
 import { User } from "../entities/user/model"
 import { useLoadingStore } from "../shared/model"
 import { useUserModal } from "../entities/user/model"
 import { UserModal } from "../entities/user/ui"
-import { usePostManagement } from "../feature/postManagement/model"
+import { usePostManagement, usePostQueryParams } from "../feature/postManagement/model"
 import { useCommentManagement } from "../feature/commentManagement/model"
 import { useTags } from "../feature/tagManagement/model"
 
 const PostsManager = () => {
-  const navigate = useNavigate()
-  const location = useLocation()
-  const queryParams = new URLSearchParams(location.search)
-
-  // 상태 관리
-  const [skip, setSkip] = useState<number>(parseInt(queryParams.get("skip") || "0"))
-  const [limit, setLimit] = useState<number>(parseInt(queryParams.get("limit") || "10"))
-  const [searchQuery, setSearchQuery] = useState<string>(queryParams.get("search") || "")
-  const [sortBy, setSortBy] = useState<string>(queryParams.get("sortBy") || "")
-  const [sortOrder, setSortOrder] = useState<string>(queryParams.get("sortOrder") || "asc")
-  const [selectedTag, setSelectedTag] = useState<string>(queryParams.get("tag") || "")
   const [showPostDetailDialog, setShowPostDetailDialog] = useState<boolean>(false)
 
   const { openUserModal, showUserModal, setShowUserModal, selectedUser } = useUserModal()
@@ -73,6 +60,22 @@ const PostsManager = () => {
   } = usePostManagement()
 
   const {
+    skip,
+    setSkip,
+    limit,
+    setLimit,
+    sortBy,
+    setSortBy,
+    sortOrder,
+    setSortOrder,
+    selectedTag,
+    setSelectedTag,
+    searchQuery,
+    setSearchQuery,
+    updateURL,
+  } = usePostQueryParams()
+
+  const {
     comments,
     selectedComment,
     showAddCommentDialog,
@@ -92,18 +95,6 @@ const PostsManager = () => {
   const { tags } = useTags()
 
   const { loading } = useLoadingStore()
-
-  // URL 업데이트 함수
-  const updateURL = () => {
-    const params = new URLSearchParams()
-    if (skip) params.set("skip", skip.toString())
-    if (limit) params.set("limit", limit.toString())
-    if (searchQuery) params.set("search", searchQuery)
-    if (sortBy) params.set("sortBy", sortBy)
-    if (sortOrder) params.set("sortOrder", sortOrder)
-    if (selectedTag) params.set("tag", selectedTag)
-    navigate(`?${params.toString()}`)
-  }
 
   // 기존 fetchPosts 함수 대체
   const handleFetchPosts = async () => {
@@ -180,16 +171,6 @@ const PostsManager = () => {
     }
     updateURL()
   }, [skip, limit, sortBy, sortOrder, selectedTag])
-
-  useEffect(() => {
-    const params = new URLSearchParams(location.search)
-    setSkip(parseInt(params.get("skip") || "0"))
-    setLimit(parseInt(params.get("limit") || "10"))
-    setSearchQuery(params.get("search") || "")
-    setSortBy(params.get("sortBy") || "")
-    setSortOrder(params.get("sortOrder") || "asc")
-    setSelectedTag(params.get("tag") || "")
-  }, [location.search])
 
   // 게시물 테이블 렌더링
   const renderPostTable = () => (
