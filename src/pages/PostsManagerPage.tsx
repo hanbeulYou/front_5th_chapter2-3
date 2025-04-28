@@ -1,4 +1,3 @@
-import { useEffect } from "react"
 import { Edit2, MessageSquare, Plus, Search, ThumbsDown, ThumbsUp, Trash2 } from "lucide-react"
 import {
   Button,
@@ -31,7 +30,13 @@ import { User } from "../entities/user/model"
 import { useLoadingStore } from "../shared/model"
 import { useUserModal } from "../entities/user/model"
 import { UserModal } from "../entities/user/ui"
-import { usePostManagement, usePostQueryParams, usePostDetail } from "../feature/postManagement/model"
+import {
+  usePostManagement,
+  usePostDetail,
+  usePostQueryParams,
+  useAutoPostLoader,
+  usePostFilterStore,
+} from "../feature/postManagement/model"
 import { useCommentManagement } from "../feature/commentManagement/model"
 import { useTags } from "../feature/tagManagement/model"
 
@@ -57,7 +62,9 @@ const PostsManager = () => {
     deletePostById,
   } = usePostManagement()
 
-  const { skip, limit, sortBy, sortOrder, selectedTag, searchQuery, setFilter, updateURL } = usePostQueryParams()
+  const { skip, limit, sortBy, sortOrder, selectedTag, searchQuery, setFilter } = usePostFilterStore()
+
+  const { updateURL } = usePostQueryParams()
 
   const { showPostDetailDialog, setShowPostDetailDialog, openPostDetail } = usePostDetail({ setSelectedPost })
 
@@ -80,11 +87,6 @@ const PostsManager = () => {
   const { tags } = useTags()
 
   const { loading } = useLoadingStore()
-
-  // 기존 fetchPosts 함수 대체
-  const handleFetchPosts = async () => {
-    loadPosts({ limit, skip })
-  }
 
   // 게시물 검색
   const handleSearchPosts = async () => {
@@ -140,17 +142,8 @@ const PostsManager = () => {
   const handleOpenUserModal = async (user: User) => {
     openUserModal(user)
   }
+  useAutoPostLoader({ loadPosts, loadPostsByTag })
 
-  useEffect(() => {
-    if (selectedTag) {
-      handleFetchPostsByTag(selectedTag)
-    } else {
-      handleFetchPosts()
-    }
-    updateURL()
-  }, [skip, limit, sortBy, sortOrder, selectedTag])
-
-  // 게시물 테이블 렌더링
   const renderPostTable = () => (
     <Table>
       <TableHeader>
