@@ -1,26 +1,22 @@
-import { useState, useEffect } from "react"
+import { useEffect } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
+import { usePostFilterStore } from "./postFilterStore"
 
 export const usePostQueryParams = () => {
   const navigate = useNavigate()
   const location = useLocation()
 
-  const [skip, setSkip] = useState<number>(0)
-  const [limit, setLimit] = useState<number>(10)
-  const [sortBy, setSortBy] = useState<string>("")
-  const [sortOrder, setSortOrder] = useState<string>("asc")
-  const [selectedTag, setSelectedTag] = useState<string>("")
-  const [searchQuery, setSearchQuery] = useState<string>("")
+  const { skip, limit, sortBy, sortOrder, selectedTag, searchQuery, setFilter } = usePostFilterStore()
 
   useEffect(() => {
     const params = new URLSearchParams(location.search)
-    setSkip(parseInt(params.get("skip") || "0"))
-    setLimit(parseInt(params.get("limit") || "10"))
-    setSortBy(params.get("sortBy") || "")
-    setSortOrder(params.get("sortOrder") || "asc")
-    setSelectedTag(params.get("tag") || "")
-    setSearchQuery(params.get("search") || "")
-  }, [location.search])
+    setFilter("skip", parseInt(params.get("skip") || "0"))
+    setFilter("limit", parseInt(params.get("limit") || "10"))
+    setFilter("sortBy", params.get("sortBy") || "")
+    setFilter("sortOrder", params.get("sortOrder") || "asc")
+    setFilter("selectedTag", params.get("tag") || "")
+    setFilter("searchQuery", params.get("search") || "")
+  }, [location.search, setFilter])
 
   const updateURL = () => {
     const params = new URLSearchParams()
@@ -35,17 +31,12 @@ export const usePostQueryParams = () => {
 
   return {
     skip,
-    setSkip,
     limit,
-    setLimit,
     sortBy,
-    setSortBy,
     sortOrder,
-    setSortOrder,
     selectedTag,
-    setSelectedTag,
     searchQuery,
-    setSearchQuery,
+    setFilter,
     updateURL,
   }
 }

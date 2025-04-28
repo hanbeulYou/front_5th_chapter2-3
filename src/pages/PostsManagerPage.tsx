@@ -57,21 +57,7 @@ const PostsManager = () => {
     deletePostById,
   } = usePostManagement()
 
-  const {
-    skip,
-    setSkip,
-    limit,
-    setLimit,
-    sortBy,
-    setSortBy,
-    sortOrder,
-    setSortOrder,
-    selectedTag,
-    setSelectedTag,
-    searchQuery,
-    setSearchQuery,
-    updateURL,
-  } = usePostQueryParams()
+  const { skip, limit, sortBy, sortOrder, selectedTag, searchQuery, setFilter, updateURL } = usePostQueryParams()
 
   const { showPostDetailDialog, setShowPostDetailDialog, openPostDetail } = usePostDetail({ setSelectedPost })
 
@@ -85,7 +71,6 @@ const PostsManager = () => {
     setShowAddCommentDialog,
     setShowEditCommentDialog,
     setNewComment,
-    loadComments,
     addComment,
     updateSelectedComment,
     deleteCommentById,
@@ -124,11 +109,6 @@ const PostsManager = () => {
   // 게시물 삭제
   const handleDeletePost = async (id: number) => {
     deletePostById(id)
-  }
-
-  // 댓글 가져오기
-  const handleFetchComments = async (postId: number) => {
-    loadComments(postId)
   }
 
   // 댓글 추가
@@ -200,7 +180,7 @@ const PostsManager = () => {
                           : "text-blue-800 bg-blue-100 hover:bg-blue-200"
                       }`}
                       onClick={() => {
-                        setSelectedTag(tag)
+                        setFilter("selectedTag", tag)
                         updateURL()
                       }}
                     >
@@ -323,7 +303,7 @@ const PostsManager = () => {
                   placeholder="게시물 검색..."
                   className="pl-8"
                   value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onChange={(e) => setFilter("searchQuery", e.target.value)}
                   onKeyPress={(e) => e.key === "Enter" && handleSearchPosts()}
                 />
               </div>
@@ -331,7 +311,7 @@ const PostsManager = () => {
             <Select
               value={selectedTag}
               onValueChange={(value) => {
-                setSelectedTag(value)
+                setFilter("selectedTag", value)
                 handleFetchPostsByTag(value)
                 updateURL()
               }}
@@ -348,7 +328,7 @@ const PostsManager = () => {
                 ))}
               </SelectContent>
             </Select>
-            <Select value={sortBy} onValueChange={setSortBy}>
+            <Select value={sortBy} onValueChange={(value) => setFilter("sortBy", value)}>
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="정렬 기준" />
               </SelectTrigger>
@@ -359,7 +339,7 @@ const PostsManager = () => {
                 <SelectItem value="reactions">반응</SelectItem>
               </SelectContent>
             </Select>
-            <Select value={sortOrder} onValueChange={setSortOrder}>
+            <Select value={sortOrder} onValueChange={(value) => setFilter("sortOrder", value)}>
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="정렬 순서" />
               </SelectTrigger>
@@ -377,7 +357,7 @@ const PostsManager = () => {
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-2">
               <span>표시</span>
-              <Select value={limit.toString()} onValueChange={(value) => setLimit(Number(value))}>
+              <Select value={limit.toString()} onValueChange={(value) => setFilter("limit", Number(value))}>
                 <SelectTrigger className="w-[180px]">
                   <SelectValue placeholder="10" />
                 </SelectTrigger>
@@ -390,10 +370,10 @@ const PostsManager = () => {
               <span>항목</span>
             </div>
             <div className="flex gap-2">
-              <Button disabled={skip === 0} onClick={() => setSkip(Math.max(0, skip - limit))}>
+              <Button disabled={skip === 0} onClick={() => setFilter("skip", Math.max(0, skip - limit))}>
                 이전
               </Button>
-              <Button disabled={skip + limit >= total} onClick={() => setSkip(skip + limit)}>
+              <Button disabled={skip + limit >= total} onClick={() => setFilter("skip", skip + limit)}>
                 다음
               </Button>
             </div>
