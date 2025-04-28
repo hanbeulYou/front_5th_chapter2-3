@@ -35,6 +35,7 @@ import { useUserModal } from "../entities/user/model"
 import { UserModal } from "../entities/user/ui"
 import { usePostManagement } from "../feature/postManagement/model"
 import { useCommentManagement } from "../feature/commentManagement/model"
+import { useTags } from "../feature/tagManagement/model"
 
 const PostsManager = () => {
   const navigate = useNavigate()
@@ -47,11 +48,11 @@ const PostsManager = () => {
   const [searchQuery, setSearchQuery] = useState<string>(queryParams.get("search") || "")
   const [sortBy, setSortBy] = useState<string>(queryParams.get("sortBy") || "")
   const [sortOrder, setSortOrder] = useState<string>(queryParams.get("sortOrder") || "asc")
-  const [tags, setTags] = useState<Tag[]>([])
   const [selectedTag, setSelectedTag] = useState<string>(queryParams.get("tag") || "")
   const [showPostDetailDialog, setShowPostDetailDialog] = useState<boolean>(false)
 
   const { openUserModal, showUserModal, setShowUserModal, selectedUser } = useUserModal()
+
   const {
     posts,
     total,
@@ -87,6 +88,8 @@ const PostsManager = () => {
     deleteCommentById,
     likeCommentById,
   } = useCommentManagement()
+
+  const { tags } = useTags()
 
   const { loading } = useLoadingStore()
 
@@ -168,14 +171,6 @@ const PostsManager = () => {
   const handleOpenUserModal = async (user: User) => {
     openUserModal(user)
   }
-
-  useEffect(() => {
-    const fetchTagsData = async () => {
-      const tagsData = await fetchTags()
-      setTags(tagsData.tags)
-    }
-    fetchTagsData()
-  }, [])
 
   useEffect(() => {
     if (selectedTag) {
