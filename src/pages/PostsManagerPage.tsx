@@ -46,6 +46,7 @@ import { fetchUser, fetchUsers } from "../entities/user/api"
 import { Post, NewPost, Tag } from "../entities/post/model"
 import { Comment, NewComment } from "../entities/comment/model"
 import { User } from "../entities/user/model"
+import { useLoadingStore } from "../shared/model"
 
 const PostsManager = () => {
   const navigate = useNavigate()
@@ -64,7 +65,6 @@ const PostsManager = () => {
   const [showAddDialog, setShowAddDialog] = useState<boolean>(false)
   const [showEditDialog, setShowEditDialog] = useState<boolean>(false)
   const [newPost, setNewPost] = useState<NewPost>({ title: "", body: "", userId: 1 })
-  const [loading, setLoading] = useState<boolean>(false)
   const [tags, setTags] = useState<Tag[]>([])
   const [selectedTag, setSelectedTag] = useState<string>(queryParams.get("tag") || "")
   const [comments, setComments] = useState<Record<number, Comment[]>>({})
@@ -75,6 +75,8 @@ const PostsManager = () => {
   const [showPostDetailDialog, setShowPostDetailDialog] = useState<boolean>(false)
   const [showUserModal, setShowUserModal] = useState<boolean>(false)
   const [selectedUser, setSelectedUser] = useState<User | null>(null)
+
+  const { loading, setLoading } = useLoadingStore()
 
   // URL 업데이트 함수
   const updateURL = () => {
