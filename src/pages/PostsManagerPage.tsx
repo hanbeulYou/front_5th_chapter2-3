@@ -36,9 +36,9 @@ import {
   usePostQueryParams,
   useAutoPostLoader,
   usePostFilterStore,
-} from "../feature/postManagement/model"
-import { useCommentManagement } from "../feature/commentManagement/model"
-import { useTags } from "../feature/tagManagement/model"
+} from "../feature/post/model"
+import { useCommentManagement } from "../feature/comment/model"
+import { useTags } from "../feature/tag/model"
 
 const PostsManager = () => {
   const { openUserModal, showUserModal, setShowUserModal, selectedUser } = useUserModal()

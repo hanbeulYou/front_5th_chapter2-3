@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { Post } from "../../../entities/post/model"
-import { useCommentManagement } from "../../../feature/commentManagement/model"
+import { useCommentManagement } from "../../../feature/comment/model"
 
 export const usePostDetail = ({
   setSelectedPost,
