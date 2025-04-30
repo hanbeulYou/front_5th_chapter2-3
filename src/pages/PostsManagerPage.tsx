@@ -1,48 +1,36 @@
-import { Edit2, Plus, Search, ThumbsUp, Trash2 } from "lucide-react"
+import { Plus, Search } from "lucide-react"
 import {
   Button,
   Card,
   CardContent,
   CardHeader,
   CardTitle,
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
   Input,
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-  HighlightText,
 } from "../shared/ui"
 import { useUserModal } from "../entities/user/model"
 import { UserModal } from "../entities/user/ui"
 import {
   usePostQueryParams,
   usePostFilterStore,
-  useSelectedPostStore,
   useDialogStore,
   usePostsQuery,
   useSearchStore,
+  // useDeletePostMutation,
 } from "../feature/post/model"
 import { useTags } from "../feature/tag/model"
 import { PostTable } from "../widgets/post/ui"
-import {
-  useCommentsQuery,
-  useCommentStore,
-  useDeleteCommentMutation,
-  useLikeCommentMutation,
-} from "../feature/comment/model"
-import { Pagination, PostAddDialog, PostEditDialog } from "../feature/post/ui"
+import { Pagination, PostAddDialog, PostDetailDialog, PostEditDialog } from "../feature/post/ui"
 import { CommentAddDialog, CommentEditDialog } from "../feature/comment/ui"
 
 const PostsManager = () => {
   const { showUserModal, setShowUserModal, selectedUser } = useUserModal()
 
-  const { selectedPost } = useSelectedPostStore()
-  const { showDetailDialog, setShowAddDialog, setShowDetailDialog } = useDialogStore()
+  const { setShowAddDialog } = useDialogStore()
 
   const { skip, limit, sortBy, sortOrder, selectedTag, setFilter } = usePostFilterStore()
   const { searchQuery, setSearchQuery, setIsTyping } = useSearchStore()
@@ -50,13 +38,6 @@ const PostsManager = () => {
   const { data: postsData, isLoading: isPostsLoading } = usePostsQuery({ limit, skip, tag: selectedTag, searchQuery })
 
   // const deletePostMutation = useDeletePostMutation()
-
-  const { data: comments } = useCommentsQuery(selectedPost?.id)
-
-  const deleteCommentMutation = useDeleteCommentMutation()
-  const likeCommentMutation = useLikeCommentMutation()
-
-  const { setSelectedComment, setShowAddCommentDialog, setShowEditCommentDialog, resetNewComment } = useCommentStore()
 
   const posts = postsData?.posts || []
   const isLoading = isPostsLoading
@@ -72,71 +53,6 @@ const PostsManager = () => {
   //     console.error("게시물 삭제 오류:", error)
   //   }
   // }
-
-  // 댓글 삭제
-  const handleDeleteComment = async (commentId: number, postId: number) => {
-    await deleteCommentMutation.mutateAsync({
-      commentId,
-      postId,
-    })
-  }
-
-  // 댓글 좋아요
-  const handleLikeComment = async (commentId: number, postId: number) => {
-    await likeCommentMutation.mutateAsync({
-      commentId,
-      postId,
-    })
-  }
-
-  // 댓글 렌더링
-  const renderComments = (postId: number) => (
-    <div className="mt-2">
-      <div className="flex items-center justify-between mb-2">
-        <h3 className="text-sm font-semibold">댓글</h3>
-        <Button
-          size="sm"
-          onClick={() => {
-            resetNewComment()
-            setShowAddCommentDialog(true)
-          }}
-        >
-          <Plus className="w-3 h-3 mr-1" />
-          댓글 추가
-        </Button>
-      </div>
-      <div className="space-y-1">
-        {comments &&
-          comments.map((comment) => (
-            <div key={comment.id} className="flex items-center justify-between text-sm border-b pb-1">
-              <div className="flex items-center space-x-2 overflow-hidden">
-                <span className="font-medium truncate">{comment.user.username}:</span>
-                <span className="truncate">{HighlightText(comment.body, searchQuery)}</span>
-              </div>
-              <div className="flex items-center space-x-1">
-                <Button variant="ghost" size="sm" onClick={() => handleLikeComment(comment.id, postId)}>
-                  <ThumbsUp className="w-3 h-3" />
-                  <span className="ml-1 text-xs">{comment.likes}</span>
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => {
-                    setSelectedComment(comment)
-                    setShowEditCommentDialog(true)
-                  }}
-                >
-                  <Edit2 className="w-3 h-3" />
-                </Button>
-                <Button variant="ghost" size="sm" onClick={() => handleDeleteComment(comment.id, postId)}>
-                  <Trash2 className="w-3 h-3" />
-                </Button>
-              </div>
-            </div>
-          ))}
-      </div>
-    </div>
-  )
 
   return (
     <Card className="w-full max-w-6xl mx-auto">
@@ -236,19 +152,7 @@ const PostsManager = () => {
       <CommentEditDialog />
 
       {/* 게시물 상세 보기 대화상자 */}
-      {selectedPost && (
-        <Dialog open={showDetailDialog} onOpenChange={setShowDetailDialog}>
-          <DialogContent className="max-w-3xl">
-            <DialogHeader>
-              <DialogTitle>{HighlightText(selectedPost.title, searchQuery)}</DialogTitle>
-            </DialogHeader>
-            <div className="space-y-4">
-              <p>{HighlightText(selectedPost.body, searchQuery)}</p>
-              {renderComments(selectedPost.id)}
-            </div>
-          </DialogContent>
-        </Dialog>
-      )}
+      <PostDetailDialog />
 
       {/* 사용자 모달 */}
       {selectedUser && (
