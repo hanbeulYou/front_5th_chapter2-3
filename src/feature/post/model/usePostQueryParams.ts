@@ -1,12 +1,14 @@
 import { useEffect } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 import { usePostFilterStore } from "./usePostFilterStore"
+import { useSearchStore } from "./useSearchStore"
 
 export const usePostQueryParams = () => {
   const navigate = useNavigate()
   const location = useLocation()
 
-  const { skip, limit, sortBy, sortOrder, selectedTag, searchQuery, setFilter } = usePostFilterStore()
+  const { skip, limit, sortBy, sortOrder, selectedTag, setFilter } = usePostFilterStore()
+  const { searchQuery, setSearchQuery } = useSearchStore()
 
   useEffect(() => {
     const params = new URLSearchParams(location.search)
@@ -15,8 +17,10 @@ export const usePostQueryParams = () => {
     setFilter("sortBy", params.get("sortBy") || "")
     setFilter("sortOrder", params.get("sortOrder") || "asc")
     setFilter("selectedTag", params.get("tag") || "")
-    setFilter("searchQuery", params.get("search") || "")
-  }, [location.search, setFilter])
+    if (params.get("search")) {
+      setSearchQuery(params.get("search") || "")
+    }
+  }, [location.search, setFilter, setSearchQuery])
 
   const updateURL = () => {
     const params = new URLSearchParams()

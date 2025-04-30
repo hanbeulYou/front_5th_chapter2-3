@@ -6,7 +6,6 @@ interface PostFilterState {
   sortBy: string
   sortOrder: string
   selectedTag: string
-  searchQuery: string
 }
 
 interface PostFilterActions {
@@ -19,6 +18,5 @@ export const usePostFilterStore = create<PostFilterState & PostFilterActions>((s
   sortBy: "",
   sortOrder: "asc",
   selectedTag: "",
-  searchQuery: "",
   setFilter: (key, value) => set((state) => ({ ...state, [key]: value })),
 }))
