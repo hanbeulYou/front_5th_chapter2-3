@@ -27,11 +27,8 @@ import {
   usePostFilterStore,
   useSelectedPostStore,
   useDialogStore,
-  useNewPostStore,
   usePostsQuery,
-  useAddPostMutation,
   useUpdatePostMutation,
-  // useDeletePostMutation,
   useSearchStore,
 } from "../feature/post/model"
 import { useTags } from "../feature/tag/model"
@@ -44,21 +41,20 @@ import {
   useLikeCommentMutation,
   useUpdateCommentMutation,
 } from "../feature/comment/model"
+import { PostAddDialog } from "../feature/post/ui"
 
 const PostsManager = () => {
   const { showUserModal, setShowUserModal, selectedUser } = useUserModal()
 
   const { selectedPost, setSelectedPost } = useSelectedPostStore()
-  const { showAddDialog, showEditDialog, showDetailDialog, setShowAddDialog, setShowEditDialog, setShowDetailDialog } =
+  const { showEditDialog, showDetailDialog, setShowAddDialog, setShowEditDialog, setShowDetailDialog } =
     useDialogStore()
-  const { newPost, setNewPost } = useNewPostStore()
 
   const { skip, limit, sortBy, sortOrder, selectedTag, setFilter } = usePostFilterStore()
   const { searchQuery, setSearchQuery, setIsTyping } = useSearchStore()
 
   const { data: postsData, isLoading: isPostsLoading } = usePostsQuery({ limit, skip, tag: selectedTag, searchQuery })
 
-  const addPostMutation = useAddPostMutation()
   const updatePostMutation = useUpdatePostMutation()
   // const deletePostMutation = useDeletePostMutation()
 
@@ -88,17 +84,6 @@ const PostsManager = () => {
   const { updateURL } = usePostQueryParams()
 
   const { data: tags } = useTags()
-
-  // 게시물 추가
-  const handleAddPost = async () => {
-    try {
-      await addPostMutation.mutateAsync(newPost)
-      setShowAddDialog(false)
-      setNewPost({ title: "", body: "", userId: 1 })
-    } catch (error) {
-      console.error("게시물 추가 오류:", error)
-    }
-  }
 
   // 게시물 업데이트
   const handleUpdatePost = async () => {
@@ -314,33 +299,7 @@ const PostsManager = () => {
       </CardContent>
 
       {/* 게시물 추가 대화상자 */}
-      <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>새 게시물 추가</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            <Input
-              placeholder="제목"
-              value={newPost.title}
-              onChange={(e) => setNewPost({ ...newPost, title: e.target.value })}
-            />
-            <Textarea
-              rows={30}
-              placeholder="내용"
-              value={newPost.body}
-              onChange={(e) => setNewPost({ ...newPost, body: e.target.value })}
-            />
-            <Input
-              type="number"
-              placeholder="사용자 ID"
-              value={newPost.userId}
-              onChange={(e) => setNewPost({ ...newPost, userId: Number(e.target.value) })}
-            />
-            <Button onClick={handleAddPost}>게시물 추가</Button>
-          </div>
-        </DialogContent>
-      </Dialog>
+      <PostAddDialog />
 
       {/* 게시물 수정 대화상자 */}
       <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
