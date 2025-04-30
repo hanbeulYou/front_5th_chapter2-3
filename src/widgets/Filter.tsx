@@ -1,4 +1,4 @@
-import { FilterSearch, FilterSortBy, FilterSortOrder, FilterTag } from "../../../feature/filter/ui"
+import { FilterSearch, FilterSortBy, FilterSortOrder, FilterTag } from "../feature/filter/ui"
 
 export const Filter = () => {
   return (

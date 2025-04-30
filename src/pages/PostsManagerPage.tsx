@@ -2,8 +2,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "../shared/ui"
 import { UserDetailDialog } from "../entities/user/ui"
 import { Pagination, PostAddButton, PostAddDialog, PostDetailDialog, PostEditDialog } from "../feature/post/ui"
 import { CommentAddDialog, CommentEditDialog } from "../feature/comment/ui"
-import { Filter } from "../widgets/filter/ui"
 import { PostTable } from "../feature/post/ui"
+import { Filter } from "../widgets"
 
 const PostsManager = () => {
   return (
