@@ -21,7 +21,7 @@ export const PostTableItem = ({ post }: PostTableItemProps) => {
       </TableCell>
       <TableCell>
         <div className="flex items-center gap-2">
-          <PostDetailButton />
+          <PostDetailButton post={post} />
           <PostEditButton post={post} />
           <PostDeleteButton post={post} />
         </div>
