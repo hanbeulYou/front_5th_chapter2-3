@@ -7,9 +7,16 @@ interface PostTableProps {
   setSelectedPost: React.Dispatch<React.SetStateAction<Post | null>>
   setShowEditDialog: React.Dispatch<React.SetStateAction<boolean>>
   deletePostById: (id: number) => Promise<void>
+  openPostDetail: (post: Post) => void
 }
 
-export const PostTable = ({ posts, setSelectedPost, setShowEditDialog, deletePostById }: PostTableProps) => {
+export const PostTable = ({
+  posts,
+  setSelectedPost,
+  setShowEditDialog,
+  deletePostById,
+  openPostDetail,
+}: PostTableProps) => {
   return (
     <Table>
       <TableHeader>
@@ -29,6 +36,7 @@ export const PostTable = ({ posts, setSelectedPost, setShowEditDialog, deletePos
             setSelectedPost={setSelectedPost}
             setShowEditDialog={setShowEditDialog}
             deletePostById={deletePostById}
+            openPostDetail={openPostDetail}
           />
         ))}
       </TableBody>

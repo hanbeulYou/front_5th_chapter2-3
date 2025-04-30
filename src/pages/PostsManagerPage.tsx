@@ -60,7 +60,7 @@ const PostsManager = () => {
 
   const { updateURL } = usePostQueryParams()
 
-  const { showPostDetailDialog, setShowPostDetailDialog } = usePostDetail({ setSelectedPost })
+  const { showPostDetailDialog, setShowPostDetailDialog, openPostDetail } = usePostDetail({ setSelectedPost })
 
   const {
     comments,
@@ -250,6 +250,7 @@ const PostsManager = () => {
               setSelectedPost={setSelectedPost}
               setShowEditDialog={setShowEditDialog}
               deletePostById={deletePostById}
+              openPostDetail={openPostDetail}
             />
           )}
 
