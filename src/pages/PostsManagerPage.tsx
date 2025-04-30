@@ -20,15 +20,19 @@ import {
 } from "../shared/ui"
 import { Post } from "../entities/post/model"
 import { Comment } from "../entities/comment/model"
-import { useLoadingStore } from "../shared/model"
 import { useUserModal } from "../entities/user/model"
 import { UserModal } from "../entities/user/ui"
 import {
-  usePostManagement,
-  usePostDetail,
   usePostQueryParams,
-  useAutoPostLoader,
   usePostFilterStore,
+  useSelectedPostStore,
+  useDialogStore,
+  useNewPostStore,
+  usePostsQuery,
+  useAddPostMutation,
+  useUpdatePostMutation,
+  // useDeletePostMutation,
+  useSearchStore,
 } from "../feature/post/model"
 import { useCommentManagement } from "../feature/comment/model"
 import { useTags } from "../feature/tag/model"
@@ -37,30 +41,25 @@ import { PostTable } from "../widgets/post/ui"
 const PostsManager = () => {
   const { showUserModal, setShowUserModal, selectedUser } = useUserModal()
 
-  const {
-    posts,
-    total,
-    selectedPost,
-    showAddDialog,
-    showEditDialog,
-    newPost,
-    setSelectedPost,
-    setShowAddDialog,
-    setShowEditDialog,
-    setNewPost,
-    loadPosts,
-    loadPostsByTag,
-    searchPosts,
-    addPost,
-    updateSelectedPost,
-    deletePostById,
-  } = usePostManagement()
+  const { selectedPost, setSelectedPost } = useSelectedPostStore()
+  const { showAddDialog, showEditDialog, showDetailDialog, setShowAddDialog, setShowEditDialog, setShowDetailDialog } =
+    useDialogStore()
+  const { newPost, setNewPost } = useNewPostStore()
 
-  const { skip, limit, sortBy, sortOrder, selectedTag, searchQuery, setFilter } = usePostFilterStore()
+  const { skip, limit, sortBy, sortOrder, selectedTag, setFilter } = usePostFilterStore()
+  const { searchQuery, setSearchQuery, setIsTyping } = useSearchStore()
+
+  const { data: postsData, isLoading: isPostsLoading } = usePostsQuery({ limit, skip, tag: selectedTag, searchQuery })
+
+  const addPostMutation = useAddPostMutation()
+  const updatePostMutation = useUpdatePostMutation()
+  // const deletePostMutation = useDeletePostMutation()
+
+  const posts = postsData?.posts || []
+  const total = postsData?.total || 0
+  const isLoading = isPostsLoading
 
   const { updateURL } = usePostQueryParams()
-
-  const { showPostDetailDialog, setShowPostDetailDialog, openPostDetail } = usePostDetail({ setSelectedPost })
 
   const {
     comments,
@@ -78,29 +77,37 @@ const PostsManager = () => {
     likeCommentById,
   } = useCommentManagement()
 
-  const { tags } = useTags()
-
-  const { loading } = useLoadingStore()
-
-  // 게시물 검색
-  const handleSearchPosts = async () => {
-    searchPosts(searchQuery)
-  }
-
-  // 태그별 게시물 가져오기
-  const handleFetchPostsByTag = async (tag: string) => {
-    loadPostsByTag(tag)
-  }
+  const { data: tags } = useTags()
 
   // 게시물 추가
   const handleAddPost = async () => {
-    addPost()
+    try {
+      await addPostMutation.mutateAsync(newPost)
+      setShowAddDialog(false)
+      setNewPost({ title: "", body: "", userId: 1 })
+    } catch (error) {
+      console.error("게시물 추가 오류:", error)
+    }
   }
 
   // 게시물 업데이트
   const handleUpdatePost = async () => {
-    updateSelectedPost()
+    if (!selectedPost) return
+    try {
+      await updatePostMutation.mutateAsync(selectedPost)
+      setShowEditDialog(false)
+    } catch (error) {
+      console.error("게시물 업데이트 오류:", error)
+    }
   }
+
+  // const handleDeletePost = async (id: number) => {
+  //   try {
+  //     await deletePostMutation.mutateAsync(id)
+  //   } catch (error) {
+  //     console.error("게시물 삭제 오류:", error)
+  //   }
+  // }
 
   // 댓글 추가
   const handleAddComment = async () => {
@@ -121,8 +128,6 @@ const PostsManager = () => {
   const handleLikeComment = async (id: number, postId: number) => {
     likeCommentById(id, postId)
   }
-
-  useAutoPostLoader({ loadPosts, loadPostsByTag })
 
   // 댓글 렌더링
   const renderComments = (postId: number) => (
@@ -194,8 +199,16 @@ const PostsManager = () => {
                   placeholder="게시물 검색..."
                   className="pl-8"
                   value={searchQuery}
-                  onChange={(e) => setFilter("searchQuery", e.target.value)}
-                  onKeyPress={(e) => e.key === "Enter" && handleSearchPosts()}
+                  onChange={(e) => {
+                    setSearchQuery(e.target.value)
+                    setIsTyping(true)
+                  }}
+                  onKeyPress={(e) => {
+                    if (e.key === "Enter") {
+                      setSearchQuery(searchQuery)
+                      setIsTyping(false)
+                    }
+                  }}
                 />
               </div>
             </div>
@@ -203,7 +216,7 @@ const PostsManager = () => {
               value={selectedTag}
               onValueChange={(value) => {
                 setFilter("selectedTag", value)
-                handleFetchPostsByTag(value)
+                // handleFetchPostsByTag(value)
                 updateURL()
               }}
             >
@@ -242,17 +255,7 @@ const PostsManager = () => {
           </div>
 
           {/* 게시물 테이블 */}
-          {loading ? (
-            <div className="flex justify-center p-4">로딩 중...</div>
-          ) : (
-            <PostTable
-              posts={posts}
-              setSelectedPost={setSelectedPost}
-              setShowEditDialog={setShowEditDialog}
-              deletePostById={deletePostById}
-              openPostDetail={openPostDetail}
-            />
-          )}
+          {isLoading ? <div className="flex justify-center p-4">로딩 중...</div> : <PostTable posts={posts} />}
 
           {/* 페이지네이션 */}
           <div className="flex justify-between items-center">
@@ -370,7 +373,7 @@ const PostsManager = () => {
 
       {/* 게시물 상세 보기 대화상자 */}
       {selectedPost && (
-        <Dialog open={showPostDetailDialog} onOpenChange={setShowPostDetailDialog}>
+        <Dialog open={showDetailDialog} onOpenChange={setShowDetailDialog}>
           <DialogContent className="max-w-3xl">
             <DialogHeader>
               <DialogTitle>{HighlightText(selectedPost.title, searchQuery)}</DialogTitle>
