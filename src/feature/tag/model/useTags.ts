@@ -1,4 +1,3 @@
-// src/feature/tagManagement/model/useTags.ts
 import { useQuery } from "@tanstack/react-query"
 import { fetchTags } from "../../../entities/post/api"
 import { Tag } from "../../../entities/post/model"

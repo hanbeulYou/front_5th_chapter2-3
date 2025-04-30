@@ -1,10 +1,10 @@
 import { Comment } from "../model"
 
-interface DeleteCommentRequest {
+export interface DeleteCommentRequest {
   commentId: number
 }
 
-type DeleteCommentResponse = Comment & {
+export type DeleteCommentResponse = Comment & {
   isDeleted: boolean
   deletedOn: string
 }

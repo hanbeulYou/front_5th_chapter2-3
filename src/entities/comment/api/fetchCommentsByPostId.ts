@@ -4,7 +4,7 @@ interface FetchCommentsByPostIdRequest {
   postId: number
 }
 
-interface FetchCommentsByPostIdResponse {
+export interface FetchCommentsByPostIdResponse {
   comments: Comment[]
   total: number
   skip: number

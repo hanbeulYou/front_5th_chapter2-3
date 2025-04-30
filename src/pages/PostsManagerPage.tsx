@@ -34,9 +34,16 @@ import {
   // useDeletePostMutation,
   useSearchStore,
 } from "../feature/post/model"
-import { useCommentManagement } from "../feature/comment/model"
 import { useTags } from "../feature/tag/model"
 import { PostTable } from "../widgets/post/ui"
+import {
+  useAddCommentMutation,
+  useCommentsQuery,
+  useCommentStore,
+  useDeleteCommentMutation,
+  useLikeCommentMutation,
+  useUpdateCommentMutation,
+} from "../feature/comment/model"
 
 const PostsManager = () => {
   const { showUserModal, setShowUserModal, selectedUser } = useUserModal()
@@ -55,27 +62,30 @@ const PostsManager = () => {
   const updatePostMutation = useUpdatePostMutation()
   // const deletePostMutation = useDeletePostMutation()
 
+  const { data: comments } = useCommentsQuery(selectedPost?.id)
+
+  const addCommentMutation = useAddCommentMutation()
+  const updateCommentMutation = useUpdateCommentMutation()
+  const deleteCommentMutation = useDeleteCommentMutation()
+  const likeCommentMutation = useLikeCommentMutation()
+
+  const {
+    selectedComment,
+    setSelectedComment,
+    newComment,
+    setNewComment,
+    showAddCommentDialog,
+    setShowAddCommentDialog,
+    showEditCommentDialog,
+    setShowEditCommentDialog,
+    resetNewComment,
+  } = useCommentStore()
+
   const posts = postsData?.posts || []
   const total = postsData?.total || 0
   const isLoading = isPostsLoading
 
   const { updateURL } = usePostQueryParams()
-
-  const {
-    comments,
-    selectedComment,
-    showAddCommentDialog,
-    showEditCommentDialog,
-    newComment,
-    setSelectedComment,
-    setShowAddCommentDialog,
-    setShowEditCommentDialog,
-    setNewComment,
-    addComment,
-    updateSelectedComment,
-    deleteCommentById,
-    likeCommentById,
-  } = useCommentManagement()
 
   const { data: tags } = useTags()
 
@@ -111,22 +121,39 @@ const PostsManager = () => {
 
   // 댓글 추가
   const handleAddComment = async () => {
-    addComment()
+    await addCommentMutation.mutateAsync({
+      ...newComment,
+      postId: selectedPost!.id,
+    })
+    resetNewComment()
+    setShowAddCommentDialog(false)
   }
 
   // 댓글 업데이트
   const handleUpdateComment = async () => {
-    updateSelectedComment()
+    if (!selectedPost || !selectedComment) return
+
+    await updateCommentMutation.mutateAsync({
+      ...selectedComment,
+      postId: selectedPost.id,
+    })
+    setShowEditCommentDialog(false)
   }
 
   // 댓글 삭제
-  const handleDeleteComment = async (id: number, postId: number) => {
-    deleteCommentById(id, postId)
+  const handleDeleteComment = async (commentId: number, postId: number) => {
+    await deleteCommentMutation.mutateAsync({
+      commentId,
+      postId,
+    })
   }
 
   // 댓글 좋아요
-  const handleLikeComment = async (id: number, postId: number) => {
-    likeCommentById(id, postId)
+  const handleLikeComment = async (commentId: number, postId: number) => {
+    await likeCommentMutation.mutateAsync({
+      commentId,
+      postId,
+    })
   }
 
   // 댓글 렌더링
@@ -137,7 +164,7 @@ const PostsManager = () => {
         <Button
           size="sm"
           onClick={() => {
-            setNewComment((prev) => ({ ...prev, postId }))
+            resetNewComment()
             setShowAddCommentDialog(true)
           }}
         >
@@ -146,33 +173,34 @@ const PostsManager = () => {
         </Button>
       </div>
       <div className="space-y-1">
-        {comments[postId]?.map((comment) => (
-          <div key={comment.id} className="flex items-center justify-between text-sm border-b pb-1">
-            <div className="flex items-center space-x-2 overflow-hidden">
-              <span className="font-medium truncate">{comment.user.username}:</span>
-              <span className="truncate">{HighlightText(comment.body, searchQuery)}</span>
+        {comments &&
+          comments.map((comment) => (
+            <div key={comment.id} className="flex items-center justify-between text-sm border-b pb-1">
+              <div className="flex items-center space-x-2 overflow-hidden">
+                <span className="font-medium truncate">{comment.user.username}:</span>
+                <span className="truncate">{HighlightText(comment.body, searchQuery)}</span>
+              </div>
+              <div className="flex items-center space-x-1">
+                <Button variant="ghost" size="sm" onClick={() => handleLikeComment(comment.id, postId)}>
+                  <ThumbsUp className="w-3 h-3" />
+                  <span className="ml-1 text-xs">{comment.likes}</span>
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => {
+                    setSelectedComment(comment)
+                    setShowEditCommentDialog(true)
+                  }}
+                >
+                  <Edit2 className="w-3 h-3" />
+                </Button>
+                <Button variant="ghost" size="sm" onClick={() => handleDeleteComment(comment.id, postId)}>
+                  <Trash2 className="w-3 h-3" />
+                </Button>
+              </div>
             </div>
-            <div className="flex items-center space-x-1">
-              <Button variant="ghost" size="sm" onClick={() => handleLikeComment(comment.id, postId)}>
-                <ThumbsUp className="w-3 h-3" />
-                <span className="ml-1 text-xs">{comment.likes}</span>
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => {
-                  setSelectedComment(comment)
-                  setShowEditCommentDialog(true)
-                }}
-              >
-                <Edit2 className="w-3 h-3" />
-              </Button>
-              <Button variant="ghost" size="sm" onClick={() => handleDeleteComment(comment.id, postId)}>
-                <Trash2 className="w-3 h-3" />
-              </Button>
-            </div>
-          </div>
-        ))}
+          ))}
       </div>
     </div>
   )
