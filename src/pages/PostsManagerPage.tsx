@@ -18,7 +18,6 @@ import {
   Textarea,
   HighlightText,
 } from "../shared/ui"
-import { Post } from "../entities/post/model"
 import { Comment } from "../entities/comment/model"
 import { useUserModal } from "../entities/user/model"
 import { UserModal } from "../entities/user/ui"
@@ -28,7 +27,6 @@ import {
   useSelectedPostStore,
   useDialogStore,
   usePostsQuery,
-  useUpdatePostMutation,
   useSearchStore,
 } from "../feature/post/model"
 import { useTags } from "../feature/tag/model"
@@ -41,21 +39,19 @@ import {
   useLikeCommentMutation,
   useUpdateCommentMutation,
 } from "../feature/comment/model"
-import { PostAddDialog } from "../feature/post/ui"
+import { PostAddDialog, PostEditDialog } from "../feature/post/ui"
 
 const PostsManager = () => {
   const { showUserModal, setShowUserModal, selectedUser } = useUserModal()
 
-  const { selectedPost, setSelectedPost } = useSelectedPostStore()
-  const { showEditDialog, showDetailDialog, setShowAddDialog, setShowEditDialog, setShowDetailDialog } =
-    useDialogStore()
+  const { selectedPost } = useSelectedPostStore()
+  const { showDetailDialog, setShowAddDialog, setShowDetailDialog } = useDialogStore()
 
   const { skip, limit, sortBy, sortOrder, selectedTag, setFilter } = usePostFilterStore()
   const { searchQuery, setSearchQuery, setIsTyping } = useSearchStore()
 
   const { data: postsData, isLoading: isPostsLoading } = usePostsQuery({ limit, skip, tag: selectedTag, searchQuery })
 
-  const updatePostMutation = useUpdatePostMutation()
   // const deletePostMutation = useDeletePostMutation()
 
   const { data: comments } = useCommentsQuery(selectedPost?.id)
@@ -84,17 +80,6 @@ const PostsManager = () => {
   const { updateURL } = usePostQueryParams()
 
   const { data: tags } = useTags()
-
-  // 게시물 업데이트
-  const handleUpdatePost = async () => {
-    if (!selectedPost) return
-    try {
-      await updatePostMutation.mutateAsync(selectedPost)
-      setShowEditDialog(false)
-    } catch (error) {
-      console.error("게시물 업데이트 오류:", error)
-    }
-  }
 
   // const handleDeletePost = async (id: number) => {
   //   try {
@@ -302,27 +287,7 @@ const PostsManager = () => {
       <PostAddDialog />
 
       {/* 게시물 수정 대화상자 */}
-      <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>게시물 수정</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            <Input
-              placeholder="제목"
-              value={selectedPost?.title || ""}
-              onChange={(e) => setSelectedPost({ ...(selectedPost as Post), title: e.target.value })}
-            />
-            <Textarea
-              rows={15}
-              placeholder="내용"
-              value={selectedPost?.body || ""}
-              onChange={(e) => setSelectedPost({ ...(selectedPost as Post), body: e.target.value })}
-            />
-            <Button onClick={handleUpdatePost}>게시물 업데이트</Button>
-          </div>
-        </DialogContent>
-      </Dialog>
+      <PostEditDialog />
 
       {/* 댓글 추가 대화상자 */}
       <Dialog open={showAddCommentDialog} onOpenChange={setShowAddCommentDialog}>
