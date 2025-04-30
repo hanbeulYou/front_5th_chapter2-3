@@ -2,10 +2,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "../shared/ui"
 import { useUserModal } from "../entities/user/model"
 import { UserModal } from "../entities/user/ui"
 import { usePostFilterStore, usePostsQuery, useSearchStore } from "../feature/post/model"
-import { PostTable } from "../widgets/post/ui"
 import { Pagination, PostAddButton, PostAddDialog, PostDetailDialog, PostEditDialog } from "../feature/post/ui"
 import { CommentAddDialog, CommentEditDialog } from "../feature/comment/ui"
 import { Filter } from "../widgets/filter/ui"
+import { PostTable } from "../feature/post/ui"
 
 const PostsManager = () => {
   const { showUserModal, setShowUserModal, selectedUser } = useUserModal()

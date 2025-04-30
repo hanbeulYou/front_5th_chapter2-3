@@ -2,7 +2,7 @@ import { TableRow, TableCell } from "../../../shared/ui"
 import { PostTitleCell, PostDetailButton, PostEditButton, PostDeleteButton } from "../../../feature/post/ui"
 import { UserCell } from "../../../feature/user/ui"
 import { Post } from "../../../entities/post/model"
-import { LikeDislikeStats } from "./LikeDislikeStats"
+import { LikeDislikeStats } from "../../../entities/post/ui"
 
 interface PostTableItemProps {
   post: Post
