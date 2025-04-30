@@ -1,4 +1,4 @@
-export * from "./fetchPost"
+export * from "./fetchPosts"
 export * from "./fetchPostsByTag"
 export * from "./fetchTags"
 export * from "./createPost"
