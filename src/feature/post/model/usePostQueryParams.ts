@@ -1,6 +1,6 @@
 import { useEffect } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
-import { usePostFilterStore } from "./postFilterStore"
+import { usePostFilterStore } from "./usePostFilterStore"
 
 export const usePostQueryParams = () => {
   const navigate = useNavigate()

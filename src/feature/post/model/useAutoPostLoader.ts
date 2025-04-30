@@ -1,5 +1,5 @@
 import { useEffect } from "react"
-import { usePostFilterStore } from "./postFilterStore"
+import { usePostFilterStore } from "./usePostFilterStore"
 import { usePostQueryParams } from "./usePostQueryParams"
 
 interface UseAutoPostLoaderProps {
