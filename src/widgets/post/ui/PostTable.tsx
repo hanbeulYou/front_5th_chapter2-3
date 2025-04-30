@@ -4,19 +4,9 @@ import { PostTableItem } from "./PostTableItem"
 
 interface PostTableProps {
   posts: Post[]
-  setSelectedPost: React.Dispatch<React.SetStateAction<Post | null>>
-  setShowEditDialog: React.Dispatch<React.SetStateAction<boolean>>
-  deletePostById: (id: number) => Promise<void>
-  openPostDetail: (post: Post) => void
 }
 
-export const PostTable = ({
-  posts,
-  setSelectedPost,
-  setShowEditDialog,
-  deletePostById,
-  openPostDetail,
-}: PostTableProps) => {
+export const PostTable = ({ posts }: PostTableProps) => {
   return (
     <Table>
       <TableHeader>
@@ -30,14 +20,7 @@ export const PostTable = ({
       </TableHeader>
       <TableBody>
         {posts.map((post) => (
-          <PostTableItem
-            key={post.id}
-            post={post}
-            setSelectedPost={setSelectedPost}
-            setShowEditDialog={setShowEditDialog}
-            deletePostById={deletePostById}
-            openPostDetail={openPostDetail}
-          />
+          <PostTableItem key={post.id} post={post} />
         ))}
       </TableBody>
     </Table>

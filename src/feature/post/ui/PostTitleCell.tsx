@@ -1,14 +1,15 @@
 import { Post } from "../../../entities/post/model"
 import { HighlightText } from "../../../shared/ui"
 import { TagItem } from "../../../feature/tag/ui"
-import { usePostFilterStore } from "../model"
+import { useSearchStore } from "../model"
 
 interface PostTitleCellProps {
   post: Post
 }
 
 export const PostTitleCell = ({ post }: PostTitleCellProps) => {
-  const { searchQuery } = usePostFilterStore()
+  const { searchQuery } = useSearchStore()
+
   return (
     <div className="space-y-1">
       <div>{HighlightText(post.title, searchQuery)}</div>

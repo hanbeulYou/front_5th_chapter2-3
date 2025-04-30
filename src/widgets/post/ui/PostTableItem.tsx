@@ -6,18 +6,9 @@ import { LikeDislikeStats } from "./LikeDislikeStats"
 
 interface PostTableItemProps {
   post: Post
-  setSelectedPost: React.Dispatch<React.SetStateAction<Post | null>>
-  setShowEditDialog: React.Dispatch<React.SetStateAction<boolean>>
-  deletePostById: (id: number) => Promise<void>
-  openPostDetail: (post: Post) => void
 }
-export const PostTableItem = ({
-  post,
-  setSelectedPost,
-  setShowEditDialog,
-  deletePostById,
-  openPostDetail,
-}: PostTableItemProps) => {
+
+export const PostTableItem = ({ post }: PostTableItemProps) => {
   return (
     <TableRow key={post.id}>
       <TableCell>{post.id}</TableCell>
@@ -30,9 +21,9 @@ export const PostTableItem = ({
       </TableCell>
       <TableCell>
         <div className="flex items-center gap-2">
-          <PostDetailButton post={post} openPostDetail={openPostDetail} />
-          <PostEditButton post={post} setSelectedPost={setSelectedPost} setShowEditDialog={setShowEditDialog} />
-          <PostDeleteButton post={post} deletePostById={deletePostById} />
+          <PostDetailButton />
+          <PostEditButton post={post} />
+          <PostDeleteButton post={post} />
         </div>
       </TableCell>
     </TableRow>

@@ -1,19 +1,15 @@
 import { Button } from "../../../shared/ui"
 import { MessageSquare } from "lucide-react"
-import { Post } from "../../../entities/post/model"
+import { useDialogStore } from "../model"
 
-interface PostDetailButtonProps {
-  post: Post
-  openPostDetail: (post: Post) => void
-}
-
-export const PostDetailButton = ({ post, openPostDetail }: PostDetailButtonProps) => {
+export const PostDetailButton = () => {
+  const { setShowDetailDialog } = useDialogStore()
   return (
     <Button
       variant="ghost"
       size="sm"
       onClick={() => {
-        openPostDetail(post)
+        setShowDetailDialog(true)
       }}
     >
       <MessageSquare className="w-4 h-4" />

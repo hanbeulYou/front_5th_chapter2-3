@@ -1,13 +1,16 @@
 import { Button } from "../../../shared/ui"
 import { Edit2 } from "lucide-react"
 import { Post } from "../../../entities/post/model"
+import { useDialogStore, useSelectedPostStore } from "../model"
 
 interface PostEditButtonProps {
   post: Post
-  setSelectedPost: React.Dispatch<React.SetStateAction<Post | null>>
-  setShowEditDialog: React.Dispatch<React.SetStateAction<boolean>>
 }
-export const PostEditButton = ({ post, setSelectedPost, setShowEditDialog }: PostEditButtonProps) => {
+
+export const PostEditButton = ({ post }: PostEditButtonProps) => {
+  const { setSelectedPost } = useSelectedPostStore()
+  const { setShowEditDialog } = useDialogStore()
+
   return (
     <Button
       variant="ghost"
