@@ -1,1 +1,1 @@
-export * from "./UserModal"
+export * from "./UserDetailDialog"
