@@ -39,7 +39,7 @@ import {
   useLikeCommentMutation,
   useUpdateCommentMutation,
 } from "../feature/comment/model"
-import { PostAddDialog, PostEditDialog } from "../feature/post/ui"
+import { Pagination, PostAddDialog, PostEditDialog } from "../feature/post/ui"
 
 const PostsManager = () => {
   const { showUserModal, setShowUserModal, selectedUser } = useUserModal()
@@ -74,7 +74,6 @@ const PostsManager = () => {
   } = useCommentStore()
 
   const posts = postsData?.posts || []
-  const total = postsData?.total || 0
   const isLoading = isPostsLoading
 
   const { updateURL } = usePostQueryParams()
@@ -256,30 +255,7 @@ const PostsManager = () => {
           {isLoading ? <div className="flex justify-center p-4">로딩 중...</div> : <PostTable posts={posts} />}
 
           {/* 페이지네이션 */}
-          <div className="flex justify-between items-center">
-            <div className="flex items-center gap-2">
-              <span>표시</span>
-              <Select value={limit.toString()} onValueChange={(value) => setFilter("limit", Number(value))}>
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="10" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="10">10</SelectItem>
-                  <SelectItem value="20">20</SelectItem>
-                  <SelectItem value="30">30</SelectItem>
-                </SelectContent>
-              </Select>
-              <span>항목</span>
-            </div>
-            <div className="flex gap-2">
-              <Button disabled={skip === 0} onClick={() => setFilter("skip", Math.max(0, skip - limit))}>
-                이전
-              </Button>
-              <Button disabled={skip + limit >= total} onClick={() => setFilter("skip", skip + limit)}>
-                다음
-              </Button>
-            </div>
-          </div>
+          <Pagination />
         </div>
       </CardContent>
 
