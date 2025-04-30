@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query"
+import { useSuspenseQuery } from "@tanstack/react-query"
 import { fetchPosts } from "../../../entities/post/api/fetchPosts"
 import { fetchUsers } from "../../../entities/user/api/fetchUsers"
 import { combinePostsWithAuthors } from "../lib"
@@ -12,7 +12,7 @@ interface UsePostsQueryProps {
 }
 
 export const usePostsQuery = ({ limit = 10, skip = 0, tag, searchQuery }: UsePostsQueryProps) => {
-  return useQuery({
+  return useSuspenseQuery({
     queryKey: ["posts", skip, limit, tag, searchQuery],
     queryFn: async () => {
       let postsData
