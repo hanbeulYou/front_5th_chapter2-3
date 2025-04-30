@@ -15,10 +15,8 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-  Textarea,
   HighlightText,
 } from "../shared/ui"
-import { Comment } from "../entities/comment/model"
 import { useUserModal } from "../entities/user/model"
 import { UserModal } from "../entities/user/ui"
 import {
@@ -32,15 +30,13 @@ import {
 import { useTags } from "../feature/tag/model"
 import { PostTable } from "../widgets/post/ui"
 import {
-  useAddCommentMutation,
   useCommentsQuery,
   useCommentStore,
   useDeleteCommentMutation,
   useLikeCommentMutation,
-  useUpdateCommentMutation,
 } from "../feature/comment/model"
 import { Pagination, PostAddDialog, PostEditDialog } from "../feature/post/ui"
-import { CommentAddDialog } from "../feature/comment/ui"
+import { CommentAddDialog, CommentEditDialog } from "../feature/comment/ui"
 
 const PostsManager = () => {
   const { showUserModal, setShowUserModal, selectedUser } = useUserModal()
@@ -57,22 +53,10 @@ const PostsManager = () => {
 
   const { data: comments } = useCommentsQuery(selectedPost?.id)
 
-  const addCommentMutation = useAddCommentMutation()
-  const updateCommentMutation = useUpdateCommentMutation()
   const deleteCommentMutation = useDeleteCommentMutation()
   const likeCommentMutation = useLikeCommentMutation()
 
-  const {
-    selectedComment,
-    setSelectedComment,
-    newComment,
-    setNewComment,
-    showAddCommentDialog,
-    setShowAddCommentDialog,
-    showEditCommentDialog,
-    setShowEditCommentDialog,
-    resetNewComment,
-  } = useCommentStore()
+  const { setSelectedComment, setShowAddCommentDialog, setShowEditCommentDialog, resetNewComment } = useCommentStore()
 
   const posts = postsData?.posts || []
   const isLoading = isPostsLoading
@@ -88,27 +72,6 @@ const PostsManager = () => {
   //     console.error("게시물 삭제 오류:", error)
   //   }
   // }
-
-  // 댓글 추가
-  const handleAddComment = async () => {
-    await addCommentMutation.mutateAsync({
-      ...newComment,
-      postId: selectedPost!.id,
-    })
-    resetNewComment()
-    setShowAddCommentDialog(false)
-  }
-
-  // 댓글 업데이트
-  const handleUpdateComment = async () => {
-    if (!selectedPost || !selectedComment) return
-
-    await updateCommentMutation.mutateAsync({
-      ...selectedComment,
-      postId: selectedPost.id,
-    })
-    setShowEditCommentDialog(false)
-  }
 
   // 댓글 삭제
   const handleDeleteComment = async (commentId: number, postId: number) => {
@@ -270,21 +233,7 @@ const PostsManager = () => {
       <CommentAddDialog />
 
       {/* 댓글 수정 대화상자 */}
-      <Dialog open={showEditCommentDialog} onOpenChange={setShowEditCommentDialog}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>댓글 수정</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            <Textarea
-              placeholder="댓글 내용"
-              value={selectedComment?.body || ""}
-              onChange={(e) => setSelectedComment({ ...(selectedComment as Comment), body: e.target.value })}
-            />
-            <Button onClick={handleUpdateComment}>댓글 업데이트</Button>
-          </div>
-        </DialogContent>
-      </Dialog>
+      <CommentEditDialog />
 
       {/* 게시물 상세 보기 대화상자 */}
       {selectedPost && (
