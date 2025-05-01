@@ -1,11 +1,12 @@
 import { Button, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../shared/ui"
-import { usePostFilterStore, usePostsQuery, useSearchStore } from "../model"
+import { usePostFilterStore } from "../model"
 
-export const Pagination = () => {
-  const { skip, limit, setFilter, selectedTag } = usePostFilterStore()
-  const { searchQuery } = useSearchStore()
-  const { data } = usePostsQuery({ limit, skip, tag: selectedTag, searchQuery })
-  const total = data?.total || 0
+interface PaginationProps {
+  total: number
+}
+
+export const Pagination = ({ total }: PaginationProps) => {
+  const { skip, limit, setFilter } = usePostFilterStore()
 
   return (
     <div className="flex justify-between items-center">

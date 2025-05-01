@@ -1,4 +1,4 @@
-import { Pagination, PostTable } from "../feature/post/ui"
+import { PostTable } from "../feature/post/ui"
 import { CardContent } from "../shared/ui"
 import { Filter } from "./Filter"
 
@@ -10,8 +10,6 @@ export const PostAdminBody = () => {
         <Filter />
         {/* 게시물 테이블 */}
         <PostTable />
-        {/* 페이지네이션 */}
-        <Pagination />
       </div>
     </CardContent>
   )
