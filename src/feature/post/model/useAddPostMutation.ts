@@ -7,13 +7,13 @@ interface PostsData {
   total: number
 }
 
-// TODO: queryKey 수정해야함
 export const useAddPostMutation = () => {
   const queryClient = useQueryClient()
+
   return useMutation({
     mutationFn: (newPost: NewPost) => createPost({ newPost }),
     onSuccess: (newPostData) => {
-      queryClient.setQueryData(["posts", 0, 10], (oldData: PostsData) => ({
+      queryClient.setQueryData(["posts", 0, 10, "", ""], (oldData: PostsData) => ({
         posts: [newPostData, ...(oldData?.posts || [])],
         total: (oldData?.total || 0) + 1,
       }))
