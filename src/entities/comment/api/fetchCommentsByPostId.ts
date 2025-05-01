@@ -1,3 +1,4 @@
+import { axiosInstance } from "../../../shared/api"
 import { Comment } from "../model"
 
 interface FetchCommentsByPostIdRequest {
@@ -14,7 +15,7 @@ export interface FetchCommentsByPostIdResponse {
 export const fetchCommentsByPostId = async ({
   postId,
 }: FetchCommentsByPostIdRequest): Promise<FetchCommentsByPostIdResponse> => {
-  const response = await fetch(`/api/comments/post/${postId}`)
-  const data = await response.json()
+  const response = await axiosInstance.get(`/comments/post/${postId}`)
+  const data = response.data
   return data
 }

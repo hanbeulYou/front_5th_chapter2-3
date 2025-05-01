@@ -1,3 +1,4 @@
+import { axiosInstance } from "../../../shared/api"
 import { Post } from "../model"
 
 interface DeletePostRequest {
@@ -7,9 +8,7 @@ interface DeletePostRequest {
 type DeletePostResponse = Post
 
 export const deletePost = async ({ postId }: DeletePostRequest): Promise<DeletePostResponse> => {
-  const response = await fetch(`/api/posts/${postId}`, {
-    method: "DELETE",
-  })
-  const data = await response.json()
+  const response = await axiosInstance.delete(`/posts/${postId}`)
+  const data = response.data
   return data
 }

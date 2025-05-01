@@ -1,3 +1,4 @@
+import { axiosInstance } from "../../../shared/api"
 import { Post } from "../model"
 
 interface FetchPostsBySearchRequest {
@@ -14,7 +15,7 @@ interface FetchPostsBySearchResponse {
 export const fetchPostsBySearch = async ({
   searchQuery,
 }: FetchPostsBySearchRequest): Promise<FetchPostsBySearchResponse> => {
-  const response = await fetch(`/api/posts/search?q=${searchQuery}`)
-  const data = await response.json()
+  const response = await axiosInstance.get(`/posts/search?q=${searchQuery}`)
+  const data = response.data
   return data
 }

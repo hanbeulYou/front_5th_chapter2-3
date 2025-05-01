@@ -1,5 +1,5 @@
 import { NewComment, Comment } from "../model"
-
+import { axiosInstance } from "../../../shared/api"
 interface CreateCommentRequest {
   newComment: NewComment
 }
@@ -7,11 +7,7 @@ interface CreateCommentRequest {
 type CreateCommentResponse = Comment
 
 export const createComment = async ({ newComment }: CreateCommentRequest): Promise<CreateCommentResponse> => {
-  const response = await fetch("/api/comments/add", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(newComment),
-  })
-  const data = await response.json()
+  const response = await axiosInstance.post("/comments/add", newComment)
+  const data = response.data
   return data
 }

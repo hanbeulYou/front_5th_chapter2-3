@@ -1,3 +1,4 @@
+import { axiosInstance } from "../../../shared/api"
 import { Comment } from "../model"
 
 interface UpdateCommentRequest {
@@ -7,11 +8,9 @@ interface UpdateCommentRequest {
 type UpdateCommentResponse = Comment
 
 export const updateComment = async ({ selectedComment }: UpdateCommentRequest): Promise<UpdateCommentResponse> => {
-  const response = await fetch(`/api/comments/${selectedComment.id}`, {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ body: selectedComment.body }),
+  const response = await axiosInstance.put(`/comments/${selectedComment.id}`, {
+    body: selectedComment.body,
   })
-  const data = await response.json()
+  const data = response.data
   return data
 }

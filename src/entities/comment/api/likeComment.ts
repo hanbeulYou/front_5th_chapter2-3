@@ -1,3 +1,4 @@
+import { axiosInstance } from "../../../shared/api"
 import { Comment } from "../model"
 
 interface LikeCommentRequest {
@@ -8,11 +9,9 @@ interface LikeCommentRequest {
 type LikeCommentResponse = Comment
 
 export const likeComment = async ({ commentId, comment }: LikeCommentRequest): Promise<LikeCommentResponse> => {
-  const response = await fetch(`/api/comments/${commentId}`, {
-    method: "PATCH",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ likes: comment.likes + 1 }),
+  const response = await axiosInstance.patch(`/comments/${commentId}`, {
+    likes: comment.likes + 1,
   })
-  const data = await response.json()
+  const data = response.data
   return data
 }

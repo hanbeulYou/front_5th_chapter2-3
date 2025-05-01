@@ -1,3 +1,4 @@
+import { axiosInstance } from "../../../shared/api"
 import { User } from "../model"
 
 interface FetchUserRequest {
@@ -7,7 +8,7 @@ interface FetchUserRequest {
 type FetchUserResponse = User
 
 export const fetchUser = async ({ userId }: FetchUserRequest): Promise<FetchUserResponse> => {
-  const response = await fetch(`/api/users/${userId}`)
-  const data = await response.json()
+  const response = await axiosInstance.get(`/users/${userId}`)
+  const data = response.data
   return data
 }

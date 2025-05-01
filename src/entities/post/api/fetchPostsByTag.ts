@@ -1,3 +1,4 @@
+import { axiosInstance } from "../../../shared/api"
 import { Post } from "../model"
 
 interface FetchPostsByTagRequest {
@@ -12,7 +13,7 @@ interface FetchPostsByTagResponse {
 }
 
 export const fetchPostsByTag = async ({ tag }: FetchPostsByTagRequest): Promise<FetchPostsByTagResponse> => {
-  const postsResponse = await fetch(`/api/posts/tag/${tag}`)
-  const postsData = await postsResponse.json()
+  const postsResponse = await axiosInstance.get(`/posts/tag/${tag}`)
+  const postsData = postsResponse.data
   return postsData
 }

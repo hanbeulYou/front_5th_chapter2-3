@@ -1,3 +1,4 @@
+import { axiosInstance } from "../../../shared/api"
 import { Post } from "../model"
 
 // 게시물 가져오기
@@ -14,7 +15,7 @@ interface FetchPostsResponse {
 }
 
 export const fetchPosts = async ({ limit, skip }: FetchPostsRequest): Promise<FetchPostsResponse> => {
-  const response = await fetch(`/api/posts?limit=${limit}&skip=${skip}`)
-  const data = await response.json()
+  const response = await axiosInstance.get(`/posts?limit=${limit}&skip=${skip}`)
+  const data = response.data
   return data
 }
