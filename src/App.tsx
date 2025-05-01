@@ -3,6 +3,7 @@ import PostsManagerPage from "./pages/PostsManagerPage.tsx"
 import { Footer, Header } from "./widgets"
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -19,6 +20,7 @@ const queryClient = new QueryClient({
 const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
+      <ReactQueryDevtools initialIsOpen={true} />
       <Router>
         <div className="flex flex-col min-h-screen">
           <Header />
