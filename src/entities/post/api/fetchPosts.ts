@@ -1,4 +1,4 @@
-import { Post } from "../../../pages/PostsManagerPage"
+import { Post } from "../model"
 
 // 게시물 가져오기
 interface FetchPostsRequest {

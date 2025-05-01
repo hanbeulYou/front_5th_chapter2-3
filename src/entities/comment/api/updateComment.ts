@@ -1,4 +1,4 @@
-import { Comment } from "../../../pages/PostsManagerPage"
+import { Comment } from "../model"
 
 interface UpdateCommentRequest {
   selectedComment: Comment

@@ -1,19 +1,19 @@
-import { Post } from "../../../pages/PostsManagerPage"
+import { Post } from "../model"
 
-interface FetchPostsByQueryRequest {
+interface FetchPostsBySearchRequest {
   searchQuery: string
 }
 
-interface FetchPostsByQueryResponse {
+interface FetchPostsBySearchResponse {
   posts: Post[]
   total: number
   skip: number
   limit: number
 }
 
-export const fetchPostsByQuery = async ({
+export const fetchPostsBySearch = async ({
   searchQuery,
-}: FetchPostsByQueryRequest): Promise<FetchPostsByQueryResponse> => {
+}: FetchPostsBySearchRequest): Promise<FetchPostsBySearchResponse> => {
   const response = await fetch(`/api/posts/search?q=${searchQuery}`)
   const data = await response.json()
   return data

@@ -1,4 +1,4 @@
-import { User } from "../../../pages/PostsManagerPage"
+import { User } from "../model"
 
 interface FetchUsersResponse {
   limit: number
