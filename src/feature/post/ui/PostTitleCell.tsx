@@ -8,11 +8,11 @@ interface PostTitleCellProps {
 }
 
 export const PostTitleCell = ({ post }: PostTitleCellProps) => {
-  const { searchQuery } = useSearchStore()
+  const { searchValue } = useSearchStore()
 
   return (
     <div className="space-y-1">
-      <div>{HighlightText(post.title, searchQuery)}</div>
+      <div>{HighlightText(post.title, searchValue)}</div>
 
       <div className="flex flex-wrap gap-1">{post.tags?.map((tag) => <TagItem key={tag} tag={tag} />)}</div>
     </div>

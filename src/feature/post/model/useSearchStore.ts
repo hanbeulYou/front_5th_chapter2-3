@@ -1,15 +1,15 @@
 import { create } from "zustand"
 
 interface SearchState {
-  isTyping: boolean
+  searchValue: string
   searchQuery: string
   setSearchQuery: (query: string) => void
-  setIsTyping: (isTyping: boolean) => void
+  setSearchValue: (value: string) => void
 }
 
 export const useSearchStore = create<SearchState>((set) => ({
-  isTyping: false,
+  searchValue: "",
   searchQuery: "",
   setSearchQuery: (query) => set({ searchQuery: query }),
-  setIsTyping: (isTyping) => set({ isTyping }),
+  setSearchValue: (value) => set({ searchValue: value }),
 }))

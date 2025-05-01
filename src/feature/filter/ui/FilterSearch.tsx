@@ -3,7 +3,7 @@ import { Input } from "../../../shared/ui"
 import { useSearchStore } from "../../post/model"
 
 export const FilterSearch = () => {
-  const { searchQuery, setSearchQuery, setIsTyping } = useSearchStore()
+  const { searchValue, setSearchValue, setSearchQuery } = useSearchStore()
 
   return (
     <div className="flex-1">
@@ -12,15 +12,13 @@ export const FilterSearch = () => {
         <Input
           placeholder="게시물 검색..."
           className="pl-8"
-          value={searchQuery}
+          value={searchValue}
           onChange={(e) => {
-            setSearchQuery(e.target.value)
-            setIsTyping(true)
+            setSearchValue(e.target.value)
           }}
           onKeyPress={(e) => {
             if (e.key === "Enter") {
-              setSearchQuery(searchQuery)
-              setIsTyping(false)
+              setSearchQuery(searchValue)
             }
           }}
         />

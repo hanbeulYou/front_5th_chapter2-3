@@ -4,7 +4,7 @@ import { useCommentsQuery, useCommentStore, useDeleteCommentMutation, useLikeCom
 import { useSearchStore } from "../../post/model"
 
 export const Comments = ({ postId }: { postId: number }) => {
-  const { searchQuery } = useSearchStore()
+  const { searchValue } = useSearchStore()
   const { setSelectedComment, setShowAddCommentDialog, setShowEditCommentDialog, resetNewComment } = useCommentStore()
 
   const { data: comments } = useCommentsQuery(postId)
@@ -46,7 +46,7 @@ export const Comments = ({ postId }: { postId: number }) => {
             <div key={comment.id} className="flex items-center justify-between text-sm border-b pb-1">
               <div className="flex items-center space-x-2 overflow-hidden">
                 <span className="font-medium truncate">{comment.user.username}:</span>
-                <span className="truncate">{HighlightText(comment.body, searchQuery)}</span>
+                <span className="truncate">{HighlightText(comment.body, searchValue)}</span>
               </div>
               <div className="flex items-center space-x-1">
                 <Button variant="ghost" size="sm" onClick={() => handleLikeComment(comment.id, postId)}>
