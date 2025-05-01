@@ -12,8 +12,7 @@ export default defineConfig({
   build: {
     rollupOptions: {
       input: {
-        origin: resolve(__dirname, "index.origin.html"),
-        refactoring: resolve(__dirname, "index.refactoring.html"),
+        index: resolve(__dirname, "index.html"),
       },
     },
   },
