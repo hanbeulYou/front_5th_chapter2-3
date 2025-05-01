@@ -1,14 +1,11 @@
 import { usePostFilterStore } from "../../post/model"
-import { usePostQueryParams } from "../../post/model"
 
 interface TagItemProps {
   tag: string
 }
 
 export const TagItem = ({ tag }: TagItemProps) => {
-  const { updateURL } = usePostQueryParams()
   const { selectedTag, setFilter } = usePostFilterStore()
-
   return (
     <span
       key={tag}
@@ -17,7 +14,6 @@ export const TagItem = ({ tag }: TagItemProps) => {
       }`}
       onClick={() => {
         setFilter("selectedTag", tag)
-        updateURL()
       }}
     >
       {tag}

@@ -11,5 +11,7 @@ export const useSearchStore = create<SearchState>((set) => ({
   searchValue: "",
   searchQuery: "",
   setSearchQuery: (query) => set({ searchQuery: query }),
-  setSearchValue: (value) => set({ searchValue: value }),
+  setSearchValue: (value) => {
+    set({ searchValue: value })
+  },
 }))

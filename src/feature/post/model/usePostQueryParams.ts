@@ -22,7 +22,7 @@ export const usePostQueryParams = () => {
     }
   }, [location.search, setFilter, setSearchQuery])
 
-  const updateURL = () => {
+  useEffect(() => {
     const params = new URLSearchParams()
     if (skip) params.set("skip", skip.toString())
     if (limit) params.set("limit", limit.toString())
@@ -31,7 +31,7 @@ export const usePostQueryParams = () => {
     if (selectedTag) params.set("tag", selectedTag)
     if (searchQuery) params.set("search", searchQuery)
     navigate(`?${params.toString()}`)
-  }
+  }, [skip, limit, sortBy, sortOrder, selectedTag, searchQuery, navigate])
 
   return {
     skip,
@@ -41,6 +41,5 @@ export const usePostQueryParams = () => {
     selectedTag,
     searchQuery,
     setFilter,
-    updateURL,
   }
 }
