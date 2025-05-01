@@ -9,6 +9,7 @@ import * as React from "react"
 import "@testing-library/jest-dom"
 import { TEST_POSTS, TEST_SEARCH_POST, TEST_USERS } from "./mockData"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
+import { useSearchStore } from "../src/feature/post/model"
 
 // 테스트 환경에서 사용할 QueryClient
 const queryClient = new QueryClient({
@@ -51,7 +52,11 @@ const server = setupServer(
 
 beforeAll(() => server.listen({ onUnhandledRequest: "error" }))
 beforeEach(() => {
-  queryClient.clear() // 캐시 초기화
+  queryClient.clear()
+  useSearchStore.setState({
+    searchValue: "",
+    searchQuery: "",
+  })
 })
 afterEach(() => server.resetHandlers())
 afterAll(() => server.close())
