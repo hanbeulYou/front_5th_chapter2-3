@@ -1,5 +1,6 @@
 {
-  "name": "front-end-2-3",
+  "name": "front-5th-chapter2-3",
+  "homepage": "https://hanbeulYou.github.io/front_5th_chapter2-3",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -9,7 +10,8 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest",
-    "coverage": "vitest run --coverage"
+    "coverage": "vitest run --coverage",
+    "deploy": "npm run build && gh-pages -d dist"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.74.11",
@@ -27,6 +29,7 @@
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^14.6.1",
+    "@types/node": "^22.15.3",
     "@types/react": "^19.1.2",
     "@types/react-dom": "^19.1.2",
     "@vitejs/plugin-react": "^4.4.1",
